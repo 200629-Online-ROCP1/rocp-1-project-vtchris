@@ -1,4 +1,4 @@
-package models.accounts;
+package com.changeBank.models.accounts;
 
 public class AccountStatus {
 	

@@ -1,4 +1,4 @@
-package models.users;
+package com.changeBank.models.users;
 
 public class Role {
 	  private int roleId; // primary key
