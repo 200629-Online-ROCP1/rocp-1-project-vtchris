@@ -4,21 +4,29 @@ import com.changeBank.models.users.Role;
 import com.changeBank.models.users.User;
 import com.changeBank.repo.RoleDao;
 import com.changeBank.repo.UserDao;
+import com.changeBank.repo.UserLoginDTO;
 
 public class Driver {
 
 	public static void main(String[] args) {
-		
-		RoleDao roleDao = RoleDao.getInstance();
-		Role role = roleDao.findById(3);
 				
-		
 		UserDao dao = UserDao.getInstance();
-		//User user = dao.findById(2);
-		User user = new User("omartin","6546","Oscar","Martinez","omartinez@dundermifflin.com",role);
-		dao.insert(user);
 		
-		System.out.println(user.toString());
+		UserLoginDTO login = new UserLoginDTO("tflenderson","12344");
+		User user = dao.login(login);
+		//LOOKUP USER
+		//User user = dao.findById(2);
+		
+		//NEW USER
+//		RoleDao roleDao = RoleDao.getInstance();
+//		Role role = roleDao.findById(3);
+//		User user = new User("tflenderson","1234","Toby","Flenderson","tflenderson@dundermifflin.com",role);
+//		dao.insert(user);
+		
+		if(user != null) {
+			System.out.println(user.toString());
+		}
+		
 
 	}
 }
