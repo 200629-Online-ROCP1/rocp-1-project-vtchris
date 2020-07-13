@@ -1,13 +1,37 @@
 package com.changeBank.models.accounts;
 
-public class Accounts {
+public class Account {
 	private int accountId; // primary key
+	private int userId;
+	private int acctNbr;
 	private double balance;  // not null
 	private AccountStatus status;
 	private AccountType type;
-	
-	public Accounts() {
+		
+	public Account() {
 		super();
+	}	
+
+	public Account(int userId, AccountType type) {
+		super();
+		this.userId = userId;
+		this.type = type;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getAcctNbr() {
+		return acctNbr;
+	}
+
+	public void setAcctNbr(int acctNbr) {
+		this.acctNbr = acctNbr;
 	}
 
 	public int getAccountId() {

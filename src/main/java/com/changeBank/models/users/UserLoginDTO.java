@@ -1,4 +1,4 @@
-package com.changeBank.repo;
+package com.changeBank.models.users;
 /**
  * 
  * @author vtchr

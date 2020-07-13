@@ -1,6 +1,7 @@
 package com.changeBank.repo;
 
 import com.changeBank.models.users.User;
+import com.changeBank.models.users.UserLoginDTO;
 import com.changeBank.utils.ConnectionUtil;
 import com.changeBank.utils.HashUtil;
 
@@ -8,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.login.LoginException;
@@ -71,6 +73,8 @@ public class UserDao implements Dao<User> {
 				return new User(
 						result.getInt("user_id"), 
 						result.getString("username"),
+						result.getString("pword"),
+						"", // Refactor another constructor to remove this
 						result.getString("first_name"), 
 						result.getString("last_name"),
 						result.getString("email"));
@@ -88,7 +92,7 @@ public class UserDao implements Dao<User> {
 		return null;
 	}
 	
-	public User login(UserLoginDTO login) {	
+	public User authenticate(UserLoginDTO login) {	
 		System.out.println("Attempting to login");
 		
 		login.setPassword(hashPassword(login.getPassword()));
@@ -105,6 +109,8 @@ public class UserDao implements Dao<User> {
 				return new User(
 						result.getInt("user_id"), 
 						result.getString("username"),
+						result.getString("pword"), 
+						"", // refactor to remove this
 						result.getString("first_name"), 
 						result.getString("last_name"),
 						result.getString("email"));
@@ -132,6 +138,34 @@ public class UserDao implements Dao<User> {
 		}
 		
 		return password;
+	}
+	@Override
+	public boolean update(User user) {
+		System.out.println("Updating");
+		
+		if(user.getPasswordNew().length() > 2 ) {
+			user.setPassword(hashPassword(user.getPasswordNew()));
+		}
+		
+		
+		try(Connection conn = ConnectionUtil.getConnection()){			
+			String sql = "UPDATE users SET first_name = ?, last_name = ?, pword = ?, email = ? WHERE user_id = ?;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1,user.getFirstName().toUpperCase());
+			statement.setString(2,user.getLastName().toUpperCase());
+			statement.setString(3,user.getPassword());
+			statement.setString(4,user.getEmail().toLowerCase());
+			statement.setInt(5,user.getUserId());
+			
+			statement.executeUpdate();		
+			
+			return true;
+						
+		}catch(SQLException e) {
+			System.out.println(e);	
+			
+		}
+		return false;
 	}
 
 }

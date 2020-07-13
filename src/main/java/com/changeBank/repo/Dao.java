@@ -5,7 +5,7 @@ import java.util.Set;
 
 public interface Dao<T> {
 	public boolean insert(T t);
-	//public boolean update(T t, Map<K,V> params);
+	public boolean update(T t);
 	public boolean delete(T t);
 	
 	public T findById(int id);	

@@ -61,5 +61,10 @@ public class RoleDao implements Dao<Role> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean update(Role t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }
