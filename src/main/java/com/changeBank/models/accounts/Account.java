@@ -4,7 +4,7 @@ public class Account {
 	private int accountId; // primary key
 	private int userId;
 	private int acctNbr;
-	private double balance;  // not null
+	private float balance;  // not null
 	private AccountStatus status;
 	private AccountType type;
 		
@@ -12,10 +12,20 @@ public class Account {
 		super();
 	}	
 
-	public Account(int userId, AccountType type) {
+	public Account(int userId, int acctNbr, AccountType type) {
 		super();
 		this.userId = userId;
+		this.acctNbr = acctNbr;
 		this.type = type;
+	}
+		
+	public Account(int accountId, int userId, int acctNbr, float balance ) {
+		super();
+		this.accountId = accountId;
+		this.userId = userId;
+		this.acctNbr = acctNbr;
+		this.balance = balance;
+		//this.type = type;
 	}
 
 	public int getUserId() {
@@ -42,11 +52,11 @@ public class Account {
 		this.accountId = accountId;
 	}
 
-	public double getBalance() {
+	public float getBalance() {
 		return balance;
 	}
 
-	public void setBalance(double balance) {
+	public void setBalance(float balance) {
 		this.balance = balance;
 	}
 
@@ -64,6 +74,12 @@ public class Account {
 
 	public void setType(AccountType type) {
 		this.type = type;
+	}
+	
+	@Override
+	public String toString() {
+		return "Account [accountId=" + accountId + ", userId=" + userId + ", acctNbr=" + acctNbr + ", balance="
+				+ balance + ", status=" + status + ", type=" + type + "]";
 	}
 
 }

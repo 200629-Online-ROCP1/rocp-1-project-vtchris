@@ -26,23 +26,15 @@ public class User {
 		this.role = role;
 	}
 	
-	public User(int userId, String username, String password, String passwordNew, String firstName, String lastName, String email) {
+	public User(int userId, String username, String password, String firstName, String lastName, String email, Role role) {
 		super();
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
-		this.passwordNew = passwordNew;
+		this.role = role;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-	}
-
-	public String getPasswordNew() {
-		return passwordNew;
-	}
-
-	public void setPasswordNew(String passwordNew) {
-		this.passwordNew = passwordNew;
 	}
 
 	public User(String username, String password, String firstName, String lastName, String email, Role role) {
@@ -55,6 +47,14 @@ public class User {
 		this.role = role;
 	}
 	
+	public String getPasswordNew() {
+		return passwordNew;
+	}
+
+	public void setPasswordNew(String passwordNew) {
+		this.passwordNew = passwordNew;
+	}
+
 	public int getUserId() {
 		return userId;
 	}

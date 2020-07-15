@@ -21,9 +21,9 @@ public class AccountTypeDao implements Dao<AccountType> {
 	}
 
 	@Override
-	public boolean insert(AccountType t) {
+	public AccountType insert(AccountType t) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 	@Override
@@ -39,11 +39,11 @@ public class AccountTypeDao implements Dao<AccountType> {
 	}
 
 	@Override
-	public AccountType findById(int id) {
+	public AccountType getById(int id) {
 		System.out.println("Looking Up Account Type by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM accountTypes WHERE acct_typ_id = ?";
+			String sql = "SELECT * FROM account_types WHERE acct_typ_id = ?";
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1,id);
 			
@@ -68,6 +68,30 @@ public class AccountTypeDao implements Dao<AccountType> {
 		return null;
 	}
 	
+	public int getNextAccountNumber(int acct_typ_id) {
+		
+		System.out.println("Looking Up next Account Number");
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "UPDATE account_types "
+					+ "SET acct_last_nbr = acct_last_nbr + 1 "  
+					+ "WHERE acct_typ_id = ? "
+					+ "RETURNING acct_last_nbr;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1, acct_typ_id);
+			
+			ResultSet result = statement.executeQuery();
+			
+			if(result.next()) {
+				return result.getInt("acct_last_nbr");			
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return 0;	
+		
+	}
 	
 
 }

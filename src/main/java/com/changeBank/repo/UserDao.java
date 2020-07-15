@@ -1,5 +1,6 @@
 package com.changeBank.repo;
 
+import com.changeBank.models.users.Role;
 import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserLoginDTO;
 import com.changeBank.utils.ConnectionUtil;
@@ -9,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +28,7 @@ public class UserDao implements Dao<User> {
 	}
 	
 	@Override
-	public boolean insert(User user) {
+	public User insert(User user) {
 		System.out.println("Inserting New User");
 		
 		user.setPassword(hashPassword(user.getPassword()));
@@ -34,7 +36,7 @@ public class UserDao implements Dao<User> {
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "INSERT INTO users (first_name,last_name,username,pword,email,role_id_fk) "
 					+ "VALUES (?,?,?,?,?,?);";
-			PreparedStatement statement = conn.prepareStatement(sql);
+			PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1,user.getFirstName().toUpperCase());
 			statement.setString(2,user.getLastName().toUpperCase());
 			statement.setString(3,user.getUsername().toLowerCase());
@@ -42,14 +44,27 @@ public class UserDao implements Dao<User> {
 			statement.setString(5,user.getEmail().toLowerCase());
 			statement.setInt(6,user.getRole().getRoleId());
 
-			statement.executeQuery();
+			int rows = statement.executeUpdate();
 			
-			return true;
+			if(rows > 0) {
+				ResultSet rs = statement.getGeneratedKeys();
+				
+				while(rs.next()) {					
+					User newUser = new User();
+					newUser = getById(rs.getInt(1));
+					newUser.setRole(user.getRole());
+					return newUser;
+				}
+			}else {
+				return null;
+			}
+			
+			return user;
 
 		}catch(SQLException e) {
 			System.out.println(e);
 		}
-		return false;
+		return null;
 	}
 
 	@Override
@@ -59,7 +74,7 @@ public class UserDao implements Dao<User> {
 	}
 
 	@Override
-	public User findById(int id) {
+	public User getById(int id) {
 		System.out.println("Looking Up User by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
@@ -74,10 +89,10 @@ public class UserDao implements Dao<User> {
 						result.getInt("user_id"), 
 						result.getString("username"),
 						result.getString("pword"),
-						"", // Refactor another constructor to remove this
 						result.getString("first_name"), 
 						result.getString("last_name"),
-						result.getString("email"));
+						result.getString("email"),
+						getRoleById(result.getInt("role_id_fk")));
 			}
 			
 		}catch(SQLException e) {
@@ -92,7 +107,7 @@ public class UserDao implements Dao<User> {
 		return null;
 	}
 	
-	public User authenticate(UserLoginDTO login) {	
+	public User authenticate(UserLoginDTO login)  {	
 		System.out.println("Attempting to login");
 		
 		login.setPassword(hashPassword(login.getPassword()));
@@ -109,11 +124,11 @@ public class UserDao implements Dao<User> {
 				return new User(
 						result.getInt("user_id"), 
 						result.getString("username"),
-						result.getString("pword"), 
-						"", // refactor to remove this
+						result.getString("pword"), 						
 						result.getString("first_name"), 
 						result.getString("last_name"),
-						result.getString("email"));
+						result.getString("email"),
+						getRoleById(result.getInt("role_id_fk")));
 			}else{
 				throw new LoginException("Username or password do not match.");
 			}
@@ -149,13 +164,14 @@ public class UserDao implements Dao<User> {
 		
 		
 		try(Connection conn = ConnectionUtil.getConnection()){			
-			String sql = "UPDATE users SET first_name = ?, last_name = ?, pword = ?, email = ? WHERE user_id = ?;";
+			String sql = "UPDATE users SET first_name = ?, last_name = ?, pword = ?, email = ?, role_id_fk = ? WHERE user_id = ?;";
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setString(1,user.getFirstName().toUpperCase());
 			statement.setString(2,user.getLastName().toUpperCase());
 			statement.setString(3,user.getPassword());
 			statement.setString(4,user.getEmail().toLowerCase());
-			statement.setInt(5,user.getUserId());
+			statement.setInt(5,user.getRole().getRoleId());
+			statement.setInt(6,user.getUserId());
 			
 			statement.executeUpdate();		
 			
@@ -166,6 +182,11 @@ public class UserDao implements Dao<User> {
 			
 		}
 		return false;
+	}
+	private Role getRoleById(int id) {
+		RoleDao roleDao = RoleDao.getInstance();
+		Role role = roleDao.getById(id);	
+		return role;
 	}
 
 }

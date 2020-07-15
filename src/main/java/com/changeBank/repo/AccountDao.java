@@ -2,10 +2,15 @@ package com.changeBank.repo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Set;
 
 import com.changeBank.models.accounts.Account;
+import com.changeBank.models.users.User;
 import com.changeBank.utils.ConnectionUtil;
 
 
@@ -21,27 +26,41 @@ public class AccountDao implements Dao<Account> {
 	}
 	
 	@Override
-	public boolean insert(Account account) {
+	public Account insert(Account account) {
 		System.out.println("Inserting New Account");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "INSERT INTO accounts (user_id_fk,acct_nbr,balance,acct_status_id_fk,acct_typ_id_fk) "
-					+ "VALUES (?,?,?,?,?,?);";
-			PreparedStatement statement = conn.prepareStatement(sql);
+					+ "VALUES (?,?,?,?,?);";
+			PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			statement.setInt(1,account.getUserId());
 			statement.setInt(2,account.getAcctNbr());
-			statement.setDouble(3,account.getBalance());
-			statement.setInt(4,account.getStatus().getAccountStatusId());
+			statement.setFloat(3,account.getBalance());
+			//statement.setInt(4,account.getStatus().getAccountStatusId());
+			statement.setInt(4,1);
 			statement.setInt(5,account.getType().getAccountTypeId());
 			
-			statement.executeQuery();
+			//ResultSet resultSet = statement.executeUpate();
+			int rows = statement.executeUpdate();
 			
-			return true;
+			if(rows > 0) {
+				
+				ResultSet keys = statement.getGeneratedKeys();
+				
+				while(keys.next()) {
+					account = getById((int)keys.getInt(1));
+				}
+				
+				keys.close();
+		            
+			}
+			
+			return account;
 
 		}catch(SQLException e) {
 			System.out.println(e);
 		}
-		return false;
+		return null;
 	
 	}
 	@Override
@@ -55,8 +74,29 @@ public class AccountDao implements Dao<Account> {
 		return false;
 	}
 	@Override
-	public Account findById(int id) {
-		// TODO Auto-generated method stub
+	public Account getById(int id) {
+		System.out.println("Looking Up Account by id");
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM accounts WHERE account_id = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1,id);
+			
+			ResultSet result = statement.executeQuery();
+			
+			if(result.next()) {
+				return new Account(
+						result.getInt("account_id"), 
+						result.getInt("user_id_fk"),
+						result.getInt("acct_nbr"),
+						result.getFloat("balance"));
+						//result.getInt("acct_status_id_fk"), 
+						//result.getInt("acct_typ_id_fk"))
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
 		return null;
 	}
 	@Override

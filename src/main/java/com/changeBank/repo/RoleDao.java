@@ -13,18 +13,18 @@ import com.changeBank.utils.ConnectionUtil;
 public class RoleDao implements Dao<Role> {
 	
 	// This is a design pattern called a "singleton" where only one implementation 
-		// of a class can exist at a time.
-		// Not set up for multi-threads
-		private static RoleDao repo = new RoleDao();
-		private RoleDao() {}
-		public static RoleDao getInstance() {
-			return repo;
-		}
+	// of a class can exist at a time.
+	// Not set up for multi-threads
+	private static RoleDao repo = new RoleDao();
+	private RoleDao() {}
+	public static RoleDao getInstance() {
+		return repo;
+	}
 
 	@Override
-	public boolean insert(Role t) {
+	public Role insert(Role t) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class RoleDao implements Dao<Role> {
 	}
 
 	@Override
-	public Role findById(int id) {
+	public Role getById(int id) {
 		System.out.println("Looking Up Role by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
