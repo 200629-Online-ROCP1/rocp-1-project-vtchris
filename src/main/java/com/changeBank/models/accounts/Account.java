@@ -12,20 +12,26 @@ public class Account {
 		super();
 	}	
 
-	public Account(int userId, int acctNbr, AccountType type) {
+	public Account(int userId, AccountType type) {
 		super();
 		this.userId = userId;
-		this.acctNbr = acctNbr;
 		this.type = type;
 	}
+	
+	public Account(int accountId, AccountStatus status) {
+		super();
+		this.accountId = accountId;
+		this.status = status;
+	}
 		
-	public Account(int accountId, int userId, int acctNbr, float balance ) {
+	public Account(int accountId, int userId, int acctNbr, float balance, AccountStatus status, AccountType type ) {
 		super();
 		this.accountId = accountId;
 		this.userId = userId;
 		this.acctNbr = acctNbr;
 		this.balance = balance;
-		//this.type = type;
+		this.status = status;
+		this.type = type;
 	}
 
 	public int getUserId() {

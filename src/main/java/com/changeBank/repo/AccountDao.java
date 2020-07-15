@@ -5,12 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Set;
 
 import com.changeBank.models.accounts.Account;
-import com.changeBank.models.users.User;
+import com.changeBank.models.accounts.AccountStatus;
+import com.changeBank.models.accounts.AccountType;
 import com.changeBank.utils.ConnectionUtil;
 
 
@@ -28,6 +27,9 @@ public class AccountDao implements Dao<Account> {
 	@Override
 	public Account insert(Account account) {
 		System.out.println("Inserting New Account");
+		
+		AccountTypeDao accountTypeDAO = AccountTypeDao.getInstance();
+		account.setAcctNbr(accountTypeDAO.getNextAccountNumber(account.getType().getAccountTypeId()));
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "INSERT INTO accounts (user_id_fk,acct_nbr,balance,acct_status_id_fk,acct_typ_id_fk) "
@@ -68,6 +70,23 @@ public class AccountDao implements Dao<Account> {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	public Account updateStatus(Account account) {
+		System.out.println("Updating Status");
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "UPDATE accounts SET acct_status_id_fk = ? WHERE account_id = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1,account.getAccountId());
+			statement.setInt(1,account.getStatus().getAccountStatusId());
+			
+			statement.executeUpdate();
+			account = getById(account.getAccountId());
+			return account;
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return null;		
+	}
 	@Override
 	public boolean delete(Account t) {
 		// TODO Auto-generated method stub
@@ -89,9 +108,9 @@ public class AccountDao implements Dao<Account> {
 						result.getInt("account_id"), 
 						result.getInt("user_id_fk"),
 						result.getInt("acct_nbr"),
-						result.getFloat("balance"));
-						//result.getInt("acct_status_id_fk"), 
-						//result.getInt("acct_typ_id_fk"))
+						result.getFloat("balance"),
+						getAccountStatusById(result.getInt("acct_status_id_fk")),
+						getAccountTypeById(result.getInt("acct_typ_id_fk")));
 			}
 			
 		}catch(SQLException e) {
@@ -103,6 +122,18 @@ public class AccountDao implements Dao<Account> {
 	public Set<Account> selectAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private AccountType getAccountTypeById(int id) {
+		AccountTypeDao accountTypeDao = AccountTypeDao.getInstance();
+		AccountType accountType = accountTypeDao.getById(id);	
+		return accountType;
+	}
+	
+	private AccountStatus getAccountStatusById(int id) {
+		AccountStatusDao accountStatusDao = AccountStatusDao.getInstance();
+		AccountStatus accountStatus = accountStatusDao.getById(id);	
+		return accountStatus;
 	}
 
 }

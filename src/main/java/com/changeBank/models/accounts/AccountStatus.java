@@ -30,7 +30,11 @@ public class AccountStatus {
 	public void setAccountStatus(String accountStatus) {
 		this.status = accountStatus;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "AccountStatus [statusId=" + statusId + ", status=" + status + "]";
+	}
+		
 
 }

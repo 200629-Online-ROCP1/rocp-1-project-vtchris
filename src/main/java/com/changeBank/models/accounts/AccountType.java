@@ -41,5 +41,10 @@ public class AccountType {
 		this.type = accountTypeName;
 	}
 
+	@Override
+	public String toString() {
+		return "AccountType [typeId=" + typeId + ", type=" + type + ", acctRate=" + acctRate + "]";
+	}
+
 	
 }
