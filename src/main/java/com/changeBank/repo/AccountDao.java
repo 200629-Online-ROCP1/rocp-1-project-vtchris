@@ -75,9 +75,9 @@ public class AccountDao implements Dao<Account> {
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "UPDATE accounts SET acct_status_id_fk = ? WHERE account_id = ?";
-			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setInt(1,account.getAccountId());
+			PreparedStatement statement = conn.prepareStatement(sql);			
 			statement.setInt(1,account.getStatus().getAccountStatusId());
+			statement.setInt(2,account.getAccountId());
 			
 			statement.executeUpdate();
 			account = getById(account.getAccountId());

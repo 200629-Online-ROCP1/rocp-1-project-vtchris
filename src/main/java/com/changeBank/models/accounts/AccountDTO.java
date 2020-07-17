@@ -12,10 +12,17 @@ public class AccountDTO {
 		super();
 	}
 
-	public AccountDTO(int userId, int type) {
+	public AccountDTO(int userId, int type, float balance) {
 		super();
 		this.userId = userId;
+		this.balance = balance;
 		this.type = type;
+	}
+	
+	public AccountDTO(int accountId, int status) {
+		super();
+		this.accountId = accountId;
+		this.status = status;
 	}
 
 	public int getAccountId() {

@@ -9,9 +9,11 @@ import com.changeBank.repo.UserDao;
 
 public class UserService {
 	
+	private UserDao userDao = UserDao.getInstance();
+	
 	public void authenticate(UserLoginDTO userLoginData) {
 		
-		UserDao userDao = UserDao.getInstance();
+		//UserDao userDao = UserDao.getInstance();
 		
 		try {
 			User user = userDao.authenticate(userLoginData);
@@ -43,7 +45,7 @@ public class UserService {
 	
 	public void updateUser(UserDTO userData, Role role) {
 		
-		UserDao userDao = UserDao.getInstance();
+		
 		User user = userDao.getById(userData.getUserId());
 		
 		// Update fields with new data if not null		
@@ -76,5 +78,11 @@ public class UserService {
 		user = userDao.getById(userData.getUserId());
 		System.out.println(user.toString());
 		
+	}
+	
+	public User findById(int id) {
+		
+		User user = userDao.getById(id);
+		return user;
 	}
 }

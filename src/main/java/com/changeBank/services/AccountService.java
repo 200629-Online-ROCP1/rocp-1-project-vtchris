@@ -20,6 +20,10 @@ public class AccountService {
 		
 	}
 	
+//	public void CreateAccountTransaction(AccountTransactionDTO accountTransactionData) {
+//		
+//	}
+	
 	public void UpdateStatus(AccountDTO accountData) {
 		
 		AccountStatusDao accountStatusDao = AccountStatusDao.getInstance();

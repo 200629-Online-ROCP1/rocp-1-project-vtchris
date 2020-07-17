@@ -23,6 +23,11 @@ public class Driver {
 //		UserService userService = new UserService();
 //		userService.CreateUser(userData);
 		
+// USER BY ID
+		UserService userService = new UserService();
+		User user = userService.findById(1);
+		System.out.println(user.toString());
+		
 // LOGIN	
 //		UserLoginDTO login = new UserLoginDTO("tflenderson","12345");
 //		UserService userService = new UserService();
@@ -40,14 +45,16 @@ public class Driver {
 //		userService.updateUser(userData, roleDoa.getById(1));
 		
 // NEW ACCOUNT
-//		AccountDTO accountData = new AccountDTO(1,2);
+//		AccountDTO accountData = new AccountDTO(1,2,0);
 //		AccountService accountService = new AccountService();
 //		accountService.CreateAccount(accountData);
 		
 // UPDATE ACCOUNT STATUS 
-		AccountDTO accountData = new AccountDTO(1,2);
+//		AccountDTO accountData = new AccountDTO(1,2);
 //		AccountService accountService = new AccountService();
-//		accountService.CreateAccount(accountData);
+//		accountService.UpdateStatus(accountData);
+		
+
 
 	}
 }
