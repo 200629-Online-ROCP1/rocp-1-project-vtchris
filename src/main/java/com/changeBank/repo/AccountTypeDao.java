@@ -39,7 +39,7 @@ public class AccountTypeDao implements Dao<AccountType> {
 	}
 
 	@Override
-	public AccountType getById(int id) {
+	public AccountType findById(int id) {
 		System.out.println("Looking Up Account Type by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){

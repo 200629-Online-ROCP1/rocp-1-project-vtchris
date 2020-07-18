@@ -35,7 +35,7 @@ public class AccountStatusDao implements Dao<AccountStatus> {
 			return false;
 		}
 		@Override
-		public AccountStatus getById(int id) {
+		public AccountStatus findById(int id) {
 			System.out.println("Looking Up Account Status by id");
 			
 			try(Connection conn = ConnectionUtil.getConnection()){

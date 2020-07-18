@@ -26,7 +26,7 @@ public class AccountTransactionDao implements Dao<AccountTransactionDao> {
 			return false;
 		}
 		@Override
-		public AccountTransactionDao getById(int id) {
+		public AccountTransactionDao findById(int id) {
 			// TODO Auto-generated method stub
 			return null;
 		}

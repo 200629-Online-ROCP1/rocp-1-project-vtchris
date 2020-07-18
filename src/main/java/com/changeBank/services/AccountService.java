@@ -12,7 +12,7 @@ public class AccountService {
 	public void CreateAccount(AccountDTO accountData) {
 		
 		AccountTypeDao accountTypeDAO = AccountTypeDao.getInstance();
-		AccountType accountType =  accountTypeDAO.getById(accountData.getType());
+		AccountType accountType =  accountTypeDAO.findById(accountData.getType());
 		AccountDao accountDAO = AccountDao.getInstance();
 		Account account = new Account(accountData.getUserId(),accountType);
 		account = accountDAO.insert(account);
@@ -28,7 +28,7 @@ public class AccountService {
 		
 		AccountStatusDao accountStatusDao = AccountStatusDao.getInstance();
 		AccountDao accountDAO = AccountDao.getInstance();
-		Account account = new Account(accountData.getAccountId(),accountStatusDao.getById(accountData.getStatus()));
+		Account account = new Account(accountData.getAccountId(),accountStatusDao.findById(accountData.getStatus()));
 		account = accountDAO.updateStatus(account);
 		System.out.println(account.toString());
 		

@@ -8,6 +8,6 @@ public interface Dao<T> {
 	public boolean update(T t);
 	public boolean delete(T t);
 	
-	public T getById(int id);	
+	public T findById(int id);	
 	public Set<T> selectAll();
 }

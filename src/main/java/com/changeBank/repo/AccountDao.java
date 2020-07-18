@@ -50,7 +50,7 @@ public class AccountDao implements Dao<Account> {
 				ResultSet keys = statement.getGeneratedKeys();
 				
 				while(keys.next()) {
-					account = getById((int)keys.getInt(1));
+					account = findById((int)keys.getInt(1));
 				}
 				
 				keys.close();
@@ -80,7 +80,7 @@ public class AccountDao implements Dao<Account> {
 			statement.setInt(2,account.getAccountId());
 			
 			statement.executeUpdate();
-			account = getById(account.getAccountId());
+			account = findById(account.getAccountId());
 			return account;
 		}catch(SQLException e) {
 			System.out.println(e);
@@ -93,7 +93,7 @@ public class AccountDao implements Dao<Account> {
 		return false;
 	}
 	@Override
-	public Account getById(int id) {
+	public Account findById(int id) {
 		System.out.println("Looking Up Account by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
@@ -126,13 +126,13 @@ public class AccountDao implements Dao<Account> {
 	
 	private AccountType getAccountTypeById(int id) {
 		AccountTypeDao accountTypeDao = AccountTypeDao.getInstance();
-		AccountType accountType = accountTypeDao.getById(id);	
+		AccountType accountType = accountTypeDao.findById(id);	
 		return accountType;
 	}
 	
 	private AccountStatus getAccountStatusById(int id) {
 		AccountStatusDao accountStatusDao = AccountStatusDao.getInstance();
-		AccountStatus accountStatus = accountStatusDao.getById(id);	
+		AccountStatus accountStatus = accountStatusDao.findById(id);	
 		return accountStatus;
 	}
 

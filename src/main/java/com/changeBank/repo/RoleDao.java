@@ -34,7 +34,7 @@ public class RoleDao implements Dao<Role> {
 	}
 
 	@Override
-	public Role getById(int id) {
+	public Role findById(int id) {
 		System.out.println("Looking Up Role by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){

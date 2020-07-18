@@ -8,6 +8,7 @@ public class UserDTO {
 	public String firstName;
 	public String lastName;
 	public String email;
-	public int role;
+	public int roleId;
+	public Role role;
 
 }

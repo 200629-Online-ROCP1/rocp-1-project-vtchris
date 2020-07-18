@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,17 +34,17 @@ public class UserDao implements Dao<User> {
 	public User insert(User user) {
 		System.out.println("Inserting New User");
 		
-		user.setPassword(hashPassword(user.getPassword()));
+		user.setPassword(hashPassword(user.getPassword().trim()));
 
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "INSERT INTO users (first_name,last_name,username,pword,email,role_id_fk) "
 					+ "VALUES (?,?,?,?,?,?);";
 			PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-			statement.setString(1,user.getFirstName().toUpperCase());
-			statement.setString(2,user.getLastName().toUpperCase());
-			statement.setString(3,user.getUsername().toLowerCase());
+			statement.setString(1,user.getFirstName().trim().toUpperCase());
+			statement.setString(2,user.getLastName().trim().toUpperCase());
+			statement.setString(3,user.getUsername().trim().toLowerCase());
 			statement.setString(4,user.getPassword());
-			statement.setString(5,user.getEmail().toLowerCase());
+			statement.setString(5,user.getEmail().trim().toLowerCase());
 			statement.setInt(6,user.getRole().getRoleId());
 
 			int rows = statement.executeUpdate();
@@ -53,7 +54,7 @@ public class UserDao implements Dao<User> {
 				
 				while(rs.next()) {					
 					User newUser = new User();
-					newUser = getById(rs.getInt(1));
+					newUser = findById(rs.getInt(1));
 					newUser.setRole(user.getRole());
 					return newUser;
 				}
@@ -61,10 +62,12 @@ public class UserDao implements Dao<User> {
 				return null;
 			}
 			
-			return user;
-
 		}catch(SQLException e) {
-			System.out.println(e);
+			if(e.getSQLState().equals("23505")) {
+				System.out.println(e.getLocalizedMessage());	
+			}else {
+				System.out.println(e);
+			}			
 		}
 		return null;
 	}
@@ -76,7 +79,7 @@ public class UserDao implements Dao<User> {
 	}
 
 	@Override
-	public User getById(int id) {
+	public User findById(int id) {
 		System.out.println("Looking Up User by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
@@ -103,10 +106,56 @@ public class UserDao implements Dao<User> {
 		return null;		
 	}
 	
+	public User findByEmail(String email) {
+		System.out.println("Looking Up User by email");
+		
+		email = email.trim().toLowerCase();
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM users WHERE email = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1,email);
+		
+			ResultSet rs = statement.executeQuery();
+			
+			if(rs.next()) {
+				return getPopulatedModel(rs);
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return null;	
+		
+	}
+	
+	public User findByUsername(String username) {
+		System.out.println("Looking Up User by username");
+		
+		username = username.trim().toLowerCase();
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM users WHERE username = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1,username);
+			
+			ResultSet rs = statement.executeQuery();
+			
+			if(rs.next()) {
+				return getPopulatedModel(rs);
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return null;	
+		
+	}
+	
 	public List<User> findAll(){
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM users;";
+			String sql = "SELECT * FROM users ORDER BY last_name, first_name;";
 			Statement statement = conn.createStatement();
 			
 			List<User> users = new ArrayList<>();
@@ -192,7 +241,7 @@ public class UserDao implements Dao<User> {
 	public boolean update(User user) {
 		System.out.println("Updating");
 		
-		if(user.getPasswordNew().length() > 2 ) {
+		if(user.getPasswordNew() != null && user.getPasswordNew().length() > 3 ) {
 			user.setPassword(hashPassword(user.getPasswordNew()));
 		}
 		
@@ -219,8 +268,24 @@ public class UserDao implements Dao<User> {
 	}
 	private Role getRoleById(int id) {
 		RoleDao roleDao = RoleDao.getInstance();
-		Role role = roleDao.getById(id);	
+		Role role = roleDao.findById(id);	
 		return role;
 	}
-
+	private User getPopulatedModel(ResultSet rs) {
+			
+			try {
+				return new User(
+						rs.getInt("user_id"), 
+						rs.getString("username"),
+						rs.getString("pword"),
+						rs.getString("first_name"), 
+						rs.getString("last_name"),
+						rs.getString("email"),
+						getRoleById(rs.getInt("role_id_fk")));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return null;
+				
+	}
 }
