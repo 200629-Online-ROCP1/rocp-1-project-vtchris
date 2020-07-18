@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -100,6 +102,38 @@ public class UserDao implements Dao<User> {
 		}
 		return null;		
 	}
+	
+	public List<User> findAll(){
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM users;";
+			Statement statement = conn.createStatement();
+			
+			List<User> users = new ArrayList<>();
+						
+			ResultSet rs = statement.executeQuery(sql);
+			
+			while(rs.next()) {
+				User u = new User();
+				u.setUserId(rs.getInt("user_id"));
+				u.setFirstName(rs.getString("first_name"));
+				u.setLastName(rs.getString("last_name"));
+				u.setUsername(rs.getString("username"));
+				u.setPassword(rs.getString("pword"));
+				u.setEmail(rs.getString("email"));
+				u.setRole(getRoleById(rs.getInt("role_id_fk")));
+				
+				users.add(u);
+			}
+			
+			return users;
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 
 	@Override
 	public Set<User> selectAll() {
@@ -110,13 +144,13 @@ public class UserDao implements Dao<User> {
 	public User authenticate(UserLoginDTO login)  {	
 		System.out.println("Attempting to login");
 		
-		login.setPassword(hashPassword(login.getPassword()));
+		login.password = hashPassword(login.password);
 		
 		try(Connection conn = ConnectionUtil.getConnection()){			
 			String sql = "SELECT * FROM users WHERE username = ? AND pword = ?;";
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setString(1,login.getUsername());
-			statement.setString(2,login.getPassword());
+			statement.setString(1,login.username);
+			statement.setString(2,login.password);
 			
 			ResultSet result = statement.executeQuery();
 			

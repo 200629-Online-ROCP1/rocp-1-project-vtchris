@@ -1,5 +1,7 @@
 package com.changeBank.services;
 
+import java.util.List;
+
 import com.changeBank.models.users.Role;
 import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserDTO;
@@ -11,63 +13,57 @@ public class UserService {
 	
 	private UserDao userDao = UserDao.getInstance();
 	
-	public void authenticate(UserLoginDTO userLoginData) {
+	public User authenticate(UserLoginDTO userLoginData) {
 		
-		//UserDao userDao = UserDao.getInstance();
-		
-		try {
-			User user = userDao.authenticate(userLoginData);
-			System.out.println(user.toString());
-		}catch (Exception e){
-			System.out.println(e);
-		}
+		return userDao.authenticate(userLoginData);			
 				
 	}
 
-	public void CreateUser(UserDTO userData) {
+	public boolean CreateUser(UserDTO userData) {
 		
 		RoleDao roleDao = RoleDao.getInstance();
-		Role role = roleDao.getById(userData.getRole());
+		Role role = roleDao.getById(userData.role);
 				
 		UserDao userDao = UserDao.getInstance();
 		User user = new User(
-				userData.getUsername(),
-				userData.getPassword(),
-				userData.getFirstName(),
-				userData.getLastName(),
-				userData.getEmail(),
+				userData.username,
+				userData.newPassword,
+				userData.firstName,
+				userData.lastName,
+				userData.email,
 				role);
 				
 		user = userDao.insert(user);
 		System.out.println(user);
+		return true;
 		
 	}	
 	
 	public void updateUser(UserDTO userData, Role role) {
 		
 		
-		User user = userDao.getById(userData.getUserId());
+		User user = userDao.getById(userData.userId);
 		
 		// Update fields with new data if not null		
-		if(userData.getEmail() != null) {
-			user.setEmail(userData.getEmail());
+		if(userData.email != null) {
+			user.setEmail(userData.email);
 		}
 				
-		if(userData.getPassword().length() > 3) {
-			user.setPasswordNew(userData.getPassword());
+		if(userData.password.length() > 3) {
+			user.setPasswordNew(userData.password);
 		}
 		
 		// Update the following fields if Admin only		
 		if(role.getRoleId() == 1) {
-			if(userData.getFirstName() != null) {
-				user.setFirstName(userData.getFirstName());
+			if(userData.firstName != null) {
+				user.setFirstName(userData.firstName);
 			}
-			if(userData.getLastName() != null) {
-				user.setLastName(userData.getLastName());	
+			if(userData.lastName != null) {
+				user.setLastName(userData.lastName);	
 			}
-			if(userData.getRole() > 0) {
+			if(userData.role > 0) {
 				RoleDao roleDao = RoleDao.getInstance(); 
-				Role userRole = roleDao.getById(userData.getRole());
+				Role userRole = roleDao.getById(userData.role);
 				user.setRole(userRole);
 			}				
 		}
@@ -75,14 +71,20 @@ public class UserService {
 		userDao.update(user);
 		
 		// Get the update user and display on console
-		user = userDao.getById(userData.getUserId());
+		user = userDao.getById(userData.userId);
 		System.out.println(user.toString());
 		
 	}
 	
 	public User findById(int id) {
 		
-		User user = userDao.getById(id);
-		return user;
+		return userDao.getById(id);
+		
+	}
+	
+	public List<User> findAll(){
+		
+		return userDao.findAll();
+		
 	}
 }
