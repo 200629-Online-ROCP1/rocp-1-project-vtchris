@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.changeBank.controllers.AccountController;
 import com.changeBank.controllers.LoginController;
 import com.changeBank.controllers.UserController;
 
 public class MasterServlet extends HttpServlet {
 	
+	private static final AccountController ac = new AccountController();
 	private static final LoginController lc = new LoginController();
 	private static final UserController uc = new UserController();
 	
@@ -57,6 +59,45 @@ public class MasterServlet extends HttpServlet {
 		System.out.println(Arrays.toString(URIparts));
 				
 		switch(URIparts[0]) {
+		case "accounts":
+			if (METHOD.equals("GET")) {
+				if(URIparts.length == 1) {
+					if(roleId == 1 || roleId == 2) {
+						ac.findAll(req, res);
+					}else {
+						res.setStatus(401);		
+					}					
+				}else if(URIparts.length == 2) {
+					
+				}else {
+					
+				}				
+			}else if (METHOD.equals("POST")) {
+				ac.createAccount(req, res, roleId, authUserId);
+			}else if (METHOD.equals("PUT")) {
+				if(roleId == 1) {
+					ac.updateAccount(req, res);
+				}else {
+					res.setStatus(401);		
+				}				
+			}else {
+				res.setStatus(405);			
+			}
+			break;
+		case "login":
+			if (METHOD.equals("POST")) {
+				lc.login(req, res);
+			}else {
+				res.setStatus(405);			
+			}			
+			break;
+		case "logout":
+			if (METHOD.equals("POST")) {
+				lc.logout(req, res);
+			}else {
+				res.setStatus(405);			
+			}			
+			break;		
 		case "users":
 			if(METHOD.equals("GET")) {
 				if(roleId == 1 || roleId == 2) {
@@ -79,20 +120,6 @@ public class MasterServlet extends HttpServlet {
 			}else {
 				res.setStatus(405);	
 			}
-			break;
-		case "login":
-			if (METHOD.equals("POST")) {
-				lc.login(req, res);
-			}else {
-				res.setStatus(405);			
-			}			
-			break;
-		case "logout":
-			if (METHOD.equals("POST")) {
-				lc.logout(req, res);
-			}else {
-				res.setStatus(405);			
-			}			
 			break;
 		}
 	}

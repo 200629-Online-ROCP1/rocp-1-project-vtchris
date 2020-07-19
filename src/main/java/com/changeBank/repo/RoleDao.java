@@ -4,13 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 import com.changeBank.models.users.Role;
 //import com.changeBank.models.users.User;
 import com.changeBank.utils.ConnectionUtil;
 
-public class RoleDao implements Dao<Role> {
+public class RoleDao implements IDao<Role> {
 	
 	// This is a design pattern called a "singleton" where only one implementation 
 	// of a class can exist at a time.
@@ -65,6 +66,11 @@ public class RoleDao implements Dao<Role> {
 	public boolean update(Role t) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	@Override
+	public List<Role> findAll() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

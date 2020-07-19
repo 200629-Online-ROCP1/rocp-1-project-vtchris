@@ -4,12 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 import com.changeBank.models.accounts.AccountType;
 import com.changeBank.utils.ConnectionUtil;
 
-public class AccountTypeDao implements Dao<AccountType> {
+public class AccountTypeDao implements IDao<AccountType> {
 	
 	// This is a design pattern called a "singleton" where only one implementation 
 	// of a class can exist at a time.
@@ -91,6 +92,11 @@ public class AccountTypeDao implements Dao<AccountType> {
 		}
 		return 0;	
 		
+	}
+	@Override
+	public List<AccountType> findAll() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

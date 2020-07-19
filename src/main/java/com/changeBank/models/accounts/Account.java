@@ -1,8 +1,11 @@
 package com.changeBank.models.accounts;
 
+import com.changeBank.models.users.User;
+
 public class Account {
 	private int accountId; // primary key
 	private int userId;
+	private User user;
 	private int acctNbr;
 	private float balance;  // not null
 	private AccountStatus status;
@@ -86,6 +89,14 @@ public class Account {
 	public String toString() {
 		return "Account [accountId=" + accountId + ", userId=" + userId + ", acctNbr=" + acctNbr + ", balance="
 				+ balance + ", status=" + status + ", type=" + type + "]";
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 
 import javax.security.auth.login.LoginException;
 
-public class UserDao implements Dao<User> {	
+public class UserDao implements IDao<User> {	
 
 	// This is a design pattern called a "singleton" where only one implementation 
 	// of a class can exist at a time.
@@ -152,6 +152,7 @@ public class UserDao implements Dao<User> {
 		
 	}
 	
+	@Override
 	public List<User> findAll(){
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
