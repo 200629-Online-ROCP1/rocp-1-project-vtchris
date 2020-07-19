@@ -27,10 +27,11 @@ public class Account {
 		this.status = status;
 	}
 		
-	public Account(int accountId, int userId, int acctNbr, float balance, AccountStatus status, AccountType type ) {
+	public Account(int accountId, int userId, User user, int acctNbr, float balance, AccountStatus status, AccountType type ) {
 		super();
 		this.accountId = accountId;
 		this.userId = userId;
+		this.user = user;
 		this.acctNbr = acctNbr;
 		this.balance = balance;
 		this.status = status;

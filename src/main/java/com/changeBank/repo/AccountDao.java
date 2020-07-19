@@ -132,20 +132,22 @@ public class AccountDao implements IDao<Account> {
 		System.out.println("Looking Up Account by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM accounts WHERE account_id = ?";
+			String sql = "SELECT * FROM accounts WHERE account_id = ? ORDER BY acct_nbr;";
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1,id);
 			
 			ResultSet result = statement.executeQuery();
 			
-			if(result.next()) {
+			while(result.next()) {
 				return new Account(
 						result.getInt("account_id"), 
 						result.getInt("user_id_fk"),
+						findUserById(result.getInt("user_id_fk")),
 						result.getInt("acct_nbr"),
 						result.getFloat("balance"),
 						findAccountStatusById(result.getInt("acct_status_id_fk")),
 						findAccountTypeById(result.getInt("acct_typ_id_fk")));
+						
 			}
 			
 		}catch(SQLException e) {
@@ -153,6 +155,74 @@ public class AccountDao implements IDao<Account> {
 		}
 		return null;
 	}
+	
+	public List<Account>  findAllByStatusId(int id) {
+		System.out.println("Looking Up Account by Status id");
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM accounts WHERE acct_status_id_fk = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1,id);
+			
+			List<Account> accounts = new ArrayList<>();
+			
+			ResultSet rs = statement.executeQuery();
+			
+			while(rs.next()) {
+				Account a = new Account(
+						rs.getInt("account_id"), 
+						rs.getInt("user_id_fk"),
+						this.findUserById(rs.getInt("user_id_fk")),
+						rs.getInt("acct_nbr"),
+						rs.getFloat("balance"),
+						this.findAccountStatusById(rs.getInt("acct_status_id_fk")),
+						this.findAccountTypeById(rs.getInt("acct_typ_id_fk")));
+				
+				accounts.add(a);
+						
+			}
+			return accounts;
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+	
+	public List<Account> findAllByUserId(int id) {
+		System.out.println("Looking Up Account by User id");
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM accounts WHERE user_id_fk = ? ORDER BY acct_nbr;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1,id);
+			
+			List<Account> accounts = new ArrayList<>();
+			
+			ResultSet rs = statement.executeQuery();
+			
+			while(rs.next()) {
+				Account a = new Account(
+						rs.getInt("account_id"), 
+						rs.getInt("user_id_fk"),
+						this.findUserById(rs.getInt("user_id_fk")),
+						rs.getInt("acct_nbr"),
+						rs.getFloat("balance"),
+						this.findAccountStatusById(rs.getInt("acct_status_id_fk")),
+						this.findAccountTypeById(rs.getInt("acct_typ_id_fk")));
+				
+				accounts.add(a);
+						
+			}
+			return accounts;
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return null;
+	
+	}
+		
 	@Override
 	public Set<Account> selectAll() {
 		// TODO Auto-generated method stub
@@ -174,6 +244,5 @@ public class AccountDao implements IDao<Account> {
 	private User findUserById(int id) {
 		return udao.findById(id);
 	}
-	
-	
+		
 }

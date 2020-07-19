@@ -41,7 +41,7 @@ public class AccountController {
 			res.setStatus(401);
 		}
 	}
-	
+		
 	public void findAll(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		List<Account> accounts = as.findAll();		
 		List<AccountDTO> asdto = new ArrayList<>();
@@ -52,6 +52,55 @@ public class AccountController {
 		res.getWriter().println(om.writeValueAsString(asdto));
 		
 	}	
+	
+	public void findById(HttpServletRequest req, HttpServletResponse res, int roleId, int authUserId, int id) throws IOException {
+
+		Account a = as.findById(id);
+		
+		if(roleId == 1 || roleId == 2 || a.getUserId() == authUserId) {			
+			AccountDTO adto = getAccountDTO(a);
+			res.setStatus(200);
+			System.out.println("writing return json");
+			res.getWriter().println(om.writeValueAsString(adto));
+		}else {
+			res.setStatus(401);	
+		}
+		
+	}
+	
+	public void findAllByStatusId(HttpServletRequest req, HttpServletResponse res, int id) throws IOException {
+
+		List<Account> accounts = as.findAllByStatusId(id);	
+		
+		if(accounts.size() == 0) {
+			// No content found
+			res.setStatus(204);
+		}else {
+			List<AccountDTO> asdto = new ArrayList<>();
+			
+			accounts.forEach(a -> asdto.add(getAccountDTO(a)));
+					
+			res.setStatus(200);
+			res.getWriter().println(om.writeValueAsString(asdto));	
+		}
+	}
+	
+	public void findAllByUserId(HttpServletRequest req, HttpServletResponse res, int id) throws IOException {
+		
+		List<Account> accounts = as.findAllByUserId(id);	
+		
+		if(accounts.size() == 0) {
+			// No content found
+			res.setStatus(204);
+		}else {
+			List<AccountDTO> asdto = new ArrayList<>();
+			
+			accounts.forEach(a -> asdto.add(getAccountDTO(a)));
+					
+			res.setStatus(200);
+			res.getWriter().println(om.writeValueAsString(asdto));	
+		}
+	}
 	
 	public void updateAccount(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		
@@ -87,6 +136,8 @@ public class AccountController {
 	}
 	
 	private AccountDTO getAccountDTO(Account a) {
+		System.out.println("getting dto from account class");
+		System.out.println(a.toString());
 		
 		AccountDTO adto = new AccountDTO();
 		adto.accountId = a.getAccountId();	
@@ -99,6 +150,7 @@ public class AccountController {
 		adto.userId = a.getUserId();
 		adto.user = getUserDTO(a.getUser());
 				
+		System.out.println("returning new dto");
 		return adto;
 					
 	}

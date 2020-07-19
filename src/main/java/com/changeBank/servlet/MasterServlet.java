@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.changeBank.controllers.AccountController;
+import com.changeBank.controllers.AccountTransactionController;
 import com.changeBank.controllers.LoginController;
 import com.changeBank.controllers.UserController;
 
@@ -17,6 +18,7 @@ public class MasterServlet extends HttpServlet {
 	
 	private static final AccountController ac = new AccountController();
 	private static final LoginController lc = new LoginController();
+	private static final AccountTransactionController tc = new AccountTransactionController();
 	private static final UserController uc = new UserController();
 	
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
@@ -68,12 +70,41 @@ public class MasterServlet extends HttpServlet {
 						res.setStatus(401);		
 					}					
 				}else if(URIparts.length == 2) {
-					
+					ac.findById(req,res, roleId, authUserId, Integer.parseInt(URIparts[1]) );
 				}else {
-					
+					String path2 = URIparts[1];
+					int id = Integer.parseInt(URIparts[2]);
+					if(path2.equals("status")) {
+						// Must be an employee to access
+						if(roleId == 1 || roleId == 2) {
+							ac.findAllByStatusId(req, res, id);
+						}else {
+							res.setStatus(401);		
+						}
+					}else if(path2.equals("users")) {
+						// Must be an employee to access Or account holder
+						if(roleId == 1 || roleId == 2 || authUserId == id) {
+							ac.findAllByUserId(req, res, id);
+						}else {
+							res.setStatus(401);		
+						}
+						
+					}else {
+						// Bad Request - unknown path
+						res.setStatus(400);
+					}
 				}				
 			}else if (METHOD.equals("POST")) {
-				ac.createAccount(req, res, roleId, authUserId);
+				if(URIparts.length == 1) {
+					ac.createAccount(req, res, roleId, authUserId);
+				}else{
+					String path2 = URIparts[1];
+					if(path2.equals("transactions")) {
+						tc.createTransaction(req, res, roleId, authUserId);
+					}else {
+						res.setStatus(401);	
+					}					
+				}
 			}else if (METHOD.equals("PUT")) {
 				if(roleId == 1) {
 					ac.updateAccount(req, res);

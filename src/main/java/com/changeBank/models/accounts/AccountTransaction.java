@@ -10,9 +10,9 @@ public class AccountTransaction {
 	private float	credit;
 	private float	signedAmount;
 	private float	runningBalance;
-	private String	status;
+	private int		status;
 	private String	memo;
-	private String	userId; //Initiated transaction
+	private int		userId; //Initiated transaction
 	private Date 	transactionDt;
 	
 	public AccountTransaction() {
@@ -67,11 +67,11 @@ public class AccountTransaction {
 		this.runningBalance = runningBalance;
 	}
 
-	public String getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 
@@ -83,11 +83,11 @@ public class AccountTransaction {
 		this.memo = memo;
 	}
 
-	public String getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 

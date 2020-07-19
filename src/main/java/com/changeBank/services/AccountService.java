@@ -27,6 +27,17 @@ public class AccountService {
 		return adao.findAll();
 	}
 	
+	public Account findById(int id) {
+		return adao.findById(id);
+	}
+	
+	public List<Account> findAllByStatusId(int id) {
+		return adao.findAllByStatusId(id);
+	}
+	
+	public List<Account> findAllByUserId(int id) {
+		return adao.findAllByUserId(id);
+	}
 //	public void CreateAccountTransaction(AccountTransactionDTO accountTransactionData) {
 //		
 //	}
@@ -43,6 +54,4 @@ public class AccountService {
 		}		
 		
 	}
-
-
 }
