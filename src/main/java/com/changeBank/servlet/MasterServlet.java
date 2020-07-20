@@ -13,32 +13,33 @@ import com.changeBank.controllers.AccountController;
 import com.changeBank.controllers.AccountTransactionController;
 import com.changeBank.controllers.LoginController;
 import com.changeBank.controllers.UserController;
+import com.changeBank.services.MessageService;
 
 @SuppressWarnings("serial")
 public class MasterServlet extends HttpServlet {
 	
 	private static final AccountController ac = new AccountController();
-	private static final LoginController lc = new LoginController();
 	private static final AccountTransactionController tc = new AccountTransactionController();
+	private static final LoginController lc = new LoginController();
 	private static final UserController uc = new UserController();
 	
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-		System.out.println("In MasterServlet doGet");
+		//System.out.println("In MasterServlet doGet");
 		router(req,res);		
 	}
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-		System.out.println("In MasterServlet doPost");
+		//System.out.println("In MasterServlet doPost");
 		router(req,res);
 	}
 	
 	protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-		System.out.println("In MasterServlet doPut");
+		//System.out.println("In MasterServlet doPut");
 		router(req,res);
 	}
 	
 	protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-		System.out.println("In MasterServlet doDelete");
+		//System.out.println("In MasterServlet doDelete");
 		router(req,res);
 	}
 	

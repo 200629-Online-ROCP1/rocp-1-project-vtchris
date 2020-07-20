@@ -11,12 +11,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserDTO;
 import com.changeBank.models.users.UserLoginDTO;
+import com.changeBank.services.MessageService;
 import com.changeBank.services.UserService;
 
 public class LoginController {
 
-	private static final UserService us = new UserService();
+	private static final MessageService ms = new MessageService();
 	private static final ObjectMapper om = new ObjectMapper();
+	private static final UserService us = new UserService();
 
 	public void login(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
@@ -30,7 +32,7 @@ public class LoginController {
 		}
 
 		String body = new String(s);
-		System.out.println(body);
+		//System.out.println(body);
 
 		UserLoginDTO l = om.readValue(body, UserLoginDTO.class);
 
@@ -63,7 +65,7 @@ public class LoginController {
 				ses.invalidate();
 			}
 			res.setStatus(400);
-			res.getWriter().println("Invalid Credentials");
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Invalid Credentials")));
 		}
 	}
 
@@ -75,10 +77,10 @@ public class LoginController {
 			String username = (String) ses.getAttribute("username");
 			ses.invalidate();
 			res.setStatus(200);
-			res.getWriter().println("You have successfully logged out " + username);
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("You have successfully logged out " + username)));
 		} else {
 			res.setStatus(400);
-			res.getWriter().println("There was no user logged into the session");
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("There was no user logged into the session")));
 		}
 	}
 }

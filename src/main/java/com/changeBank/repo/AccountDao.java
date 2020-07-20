@@ -21,8 +21,10 @@ public class AccountDao implements IDao<Account> {
 	// This is a design pattern called a "singleton" where only one implementation 
 	// of a class can exist at a time.
 	// Not set up for multi-threads
-	private static AccountDao repo = new AccountDao();
-	private UserDao udao = UserDao.getInstance();
+	private static final AccountDao repo = new AccountDao();
+	private static final AccountStatusDao asdao = AccountStatusDao.getInstance();
+	private static final AccountTypeDao atdao = AccountTypeDao.getInstance();
+	private static final UserDao udao = UserDao.getInstance();
 	
 	private AccountDao() {}
 	public static AccountDao getInstance() {
@@ -31,10 +33,9 @@ public class AccountDao implements IDao<Account> {
 	
 	@Override
 	public Account insert(Account account) {
-		System.out.println("Inserting New Account");
-		
-		AccountTypeDao accountTypeDAO = AccountTypeDao.getInstance();
-		account.setAcctNbr(accountTypeDAO.getNextAccountNumber(account.getType().getAccountTypeId()));
+		//System.out.println("Inserting New Account");
+				
+		account.setAcctNbr(atdao.getNextAccountNumber(account.getType().getAccountTypeId()));
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "INSERT INTO accounts (user_id_fk,acct_nbr,balance,acct_status_id_fk,acct_typ_id_fk) "
@@ -74,14 +75,18 @@ public class AccountDao implements IDao<Account> {
 		return false;
 	}
 	
-	protected boolean updateBalance(int id, float bal) {
-		System.out.println("Updating Balance");
-		
-		try(Connection conn = ConnectionUtil.getConnection()){
+	// Connection is passed to this method to make sure it is include in transaction/rollback
+	protected boolean updateBalance(Connection conn, int id, float bal) {
+		//System.out.println("Updating Balance");
+		//Connection conn = ConnectionUtil.getConnection()
+		try{
 			String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?;";
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setFloat(1, bal);
 			statement.setInt(2, id);
+			
+			// Test Transaction rollback
+			//int test = 10/0;
 			
 			int rows = statement.executeUpdate();
 			
@@ -97,8 +102,9 @@ public class AccountDao implements IDao<Account> {
 		
 		return false;
 	}
+	
 	public Account updateStatus(Account account) {
-		System.out.println("Updating Status");
+		//System.out.println("Updating Status");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "UPDATE accounts SET acct_status_id_fk = ? WHERE account_id = ?";
@@ -170,8 +176,7 @@ public class AccountDao implements IDao<Account> {
 						result.getInt("acct_nbr"),
 						result.getFloat("balance"),
 						findAccountStatusById(result.getInt("acct_status_id_fk")),
-						findAccountTypeById(result.getInt("acct_typ_id_fk")));
-						
+						findAccountTypeById(result.getInt("acct_typ_id_fk")));						
 			}
 			
 		}catch(SQLException e) {
@@ -181,7 +186,7 @@ public class AccountDao implements IDao<Account> {
 	}
 	
 	public List<Account>  findAllByStatusId(int id) {
-		System.out.println("Looking Up Account by Status id");
+		//System.out.println("Looking Up Account by Status id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "SELECT * FROM accounts WHERE acct_status_id_fk = ?";
@@ -254,14 +259,12 @@ public class AccountDao implements IDao<Account> {
 	}
 	
 	private AccountType findAccountTypeById(int id) {
-		AccountTypeDao accountTypeDao = AccountTypeDao.getInstance();
-		AccountType accountType = accountTypeDao.findById(id);	
+		AccountType accountType = atdao.findById(id);	
 		return accountType;
 	}
 	
 	private AccountStatus findAccountStatusById(int id) {
-		AccountStatusDao accountStatusDao = AccountStatusDao.getInstance();
-		AccountStatus accountStatus = accountStatusDao.findById(id);	
+		AccountStatus accountStatus = asdao.findById(id);	
 		return accountStatus;
 	}
 	

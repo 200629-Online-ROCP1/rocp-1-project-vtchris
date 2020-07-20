@@ -6,6 +6,7 @@ public class AccountTransaction {
 	
 	private int		transactionId;
 	private int 	accountId;
+	private int 	acctNbr;
 	private char	type;
 	private float	debit;			
 	private float	credit;
@@ -115,5 +116,22 @@ public class AccountTransaction {
 
 	public void setTargetAccount(Account targetAccount) {
 		this.targetAccount = targetAccount;
+	}
+
+	public int getAcctNbr() {
+		return acctNbr;
+	}
+
+	public void setAcctNbr(int acctNbr) {
+		this.acctNbr = acctNbr;
+	}
+
+	@Override
+	public String toString() {
+		return "AccountTransaction [transactionId=" + transactionId + ", accountId=" + accountId + ", acctNbr="
+				+ acctNbr + ", type=" + type + ", debit=" + debit + ", credit=" + credit + ", signedAmount="
+				+ signedAmount + ", runningBalance=" + runningBalance + ", status=" + status + ", memo=" + memo
+				+ ", userId=" + userId + ", transactionDt=" + transactionDt + ", targetAccount=" + targetAccount + "]";
 	}	
+	
 }

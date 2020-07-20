@@ -37,23 +37,23 @@ public class AccountStatusDao implements IDao<AccountStatus> {
 		}
 		@Override
 		public AccountStatus findById(int id) {
-			System.out.println("Looking Up Account Status by id");
+			//System.out.println("Looking Up Account Status by id");
 			
 			try(Connection conn = ConnectionUtil.getConnection()){
 				String sql = "SELECT * FROM account_status WHERE acct_status_id = ?";
 				PreparedStatement statement = conn.prepareStatement(sql);
 				statement.setInt(1,id);
 				
-				ResultSet result = statement.executeQuery();
+				ResultSet rs = statement.executeQuery();
 				
-				if(result.next()) {
+				if(rs.next()) {
 					return new AccountStatus(
-						result.getInt("acct_status_id"), 
-						result.getString("acct_status"));							
+						rs.getInt("acct_status_id"), 
+						rs.getString("acct_status"));							
 				}
 				
 			}catch(SQLException e) {
-				System.out.println(e);
+				e.printStackTrace();
 			}
 			return null;
 		}

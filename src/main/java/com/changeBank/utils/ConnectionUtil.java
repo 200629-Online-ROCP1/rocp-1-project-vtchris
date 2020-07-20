@@ -10,38 +10,21 @@ import java.sql.SQLException;
  *
  */
 public class ConnectionUtil {
-	
+
 	// Pass exception down stack
 	public static Connection getConnection() throws SQLException {
-//		 String url = "jdbc:postgresql://localhost:5432/changeBank";
-//		 String username = "postgres";
-//		 String password = "root";
-//		 
-//		 return DriverManager.getConnection(url,username,password);
-//			
-//	}
-//
-//	//test if the connection works
-//	public static void main(String[] args) {
-//		try(Connection conn = ConnectionUtil.getConnection()){
-//			System.out.println("Connection Successful");
-//		}
-//		catch(SQLException e) {
-//			System.out.println(e);
-//		}		
-//	}
-	
-	try {
-		Class.forName("org.postgresql.Driver");
-	} catch (ClassNotFoundException e) {
-		e.printStackTrace();
-	}
-	
-	String url = "jdbc:postgresql://localhost:5432/changeBank";
-	String username = "postgres";
-	String password = "root";
-	
-	return DriverManager.getConnection(url, username,password);
-			
+
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		String url = "jdbc:postgresql://localhost:5432/changeBank";
+		String username = "postgres";
+		String password = "root";
+
+		return DriverManager.getConnection(url, username, password);
+
 	}
 }

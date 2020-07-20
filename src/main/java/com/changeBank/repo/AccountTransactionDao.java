@@ -12,10 +12,11 @@ import com.changeBank.models.accounts.AccountTransaction;
 import com.changeBank.utils.ConnectionUtil;
 
 public class AccountTransactionDao implements IDao<AccountTransaction> {
+	
+		private static final AccountDao adao = AccountDao.getInstance();
 		// This is a design pattern called a "singleton" where only one implementation 
 		// of a class can exist at a time.
-		// Not set up for multi-threads
-		private AccountDao adao = AccountDao.getInstance();
+		// Not set up for multi-threads		
 		private static AccountTransactionDao repo = new AccountTransactionDao();
 		private AccountTransactionDao() {}
 		public static AccountTransactionDao getInstance() {
@@ -28,6 +29,8 @@ public class AccountTransactionDao implements IDao<AccountTransaction> {
 			Connection conn = null;
 			
 			try{
+				// setAutoCommit is creating a TRANSACTION, if any part of the transaction fails,
+				// the whole transaction will be rolled back
 				conn = ConnectionUtil.getConnection();
 				conn.setAutoCommit(false);
 				
@@ -45,45 +48,47 @@ public class AccountTransactionDao implements IDao<AccountTransaction> {
 				statement.setInt(9, t.getUserId());
 			
 				int rows = statement.executeUpdate();
-				
-				
-				
+								
 				if(rows > 0) {
 					ResultSet rs = statement.getGeneratedKeys();
 					while(rs.next()) {	
 						t.setTransactionId(rs.getInt(1));
 					}
-					
-					if(!adao.updateBalance(t.getAccountId(), t.getRunningBalance())) {
+									
+					// Update balance, to keep this in the transaction, the method must use the same connection.
+					if(!adao.updateBalance(conn, t.getAccountId(), t.getRunningBalance())) {
 						throw new Exception("Balance was not updated.");
-					}
+					}					
 					
+					// If TargetAccount is not null, it is a transfer and a new AccountTransaction is created and 
+					// recursively sent to insert again
 					if(t.getTargetAccount() != null) {
 						
 						AccountTransaction t2 = new AccountTransaction();
 						t2.setAccountId(t.getTargetAccount().getAccountId());
 						t2.setCredit(t.getDebit());
 						t2.setDebit(0);
-						t2.setMemo("TRANSFER FROM #");
-						t2.setRunningBalance(t.getTargetAccount().getBalance() + t.getCredit());
-						t2.setSignedAmount(t.getCredit());
+						t2.setMemo("TRANSFER FROM #" + t.getAcctNbr());
+						t2.setRunningBalance(t.getTargetAccount().getBalance() + t2.getCredit());
+						t2.setSignedAmount(t.getDebit());
 						t2.setStatus('A');
 						t2.setType('T');
 						t2.setUserId(t.getUserId());						
-						//Set target to null to prevent infinite regression
+						//Set target to null to prevent infinite recursion
 						t2.setTargetAccount(null);
 						
 						if(this.insert(t2) == null) {
 							throw new Exception("Transfer to transaction not inserted.");
 						}
 					}
-					
-					
-					//Throw Error
+														
+					//Throw Error to test rollback
 					//int error = 10/0;
-					//conn.commit();
+					
 					conn.commit();
+					
 					return t;
+					
 				}else {
 					return null;
 				}

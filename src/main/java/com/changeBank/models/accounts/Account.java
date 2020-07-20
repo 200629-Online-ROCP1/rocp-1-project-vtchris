@@ -3,11 +3,11 @@ package com.changeBank.models.accounts;
 import com.changeBank.models.users.User;
 
 public class Account {
-	private int accountId; // primary key
+	private int accountId; 
 	private int userId;
 	private User user;
 	private int acctNbr;
-	private float balance;  // not null
+	private float balance;  
 	private AccountStatus status;
 	private AccountType type;
 		
@@ -38,6 +38,14 @@ public class Account {
 		this.type = type;
 	}
 
+	public int getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
+
 	public int getUserId() {
 		return userId;
 	}
@@ -46,20 +54,20 @@ public class Account {
 		this.userId = userId;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public int getAcctNbr() {
 		return acctNbr;
 	}
 
 	public void setAcctNbr(int acctNbr) {
 		this.acctNbr = acctNbr;
-	}
-
-	public int getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
 	}
 
 	public float getBalance() {
@@ -85,19 +93,11 @@ public class Account {
 	public void setType(AccountType type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Account [accountId=" + accountId + ", userId=" + userId + ", acctNbr=" + acctNbr + ", balance="
-				+ balance + ", status=" + status + ", type=" + type + "]";
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
+		return "Account [accountId=" + accountId + ", userId=" + userId + ", user=" + user + ", acctNbr=" + acctNbr
+				+ ", balance=" + balance + ", status=" + status + ", type=" + type + "]";
 	}
 
 }

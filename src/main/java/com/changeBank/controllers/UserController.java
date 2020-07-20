@@ -2,8 +2,6 @@ package com.changeBank.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserDTO;
 import com.changeBank.repo.UserDao;
+import com.changeBank.services.MessageService;
 import com.changeBank.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserController {
 	
-	private static final UserService us = new UserService();
-	private static final UserDao ud = UserDao.getInstance();
+	private static final MessageService ms = new MessageService();
 	private static final ObjectMapper om = new ObjectMapper();
+	private static final UserDao ud = UserDao.getInstance();
+	private static final UserService us = new UserService();
+	
 
 	public void createUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		
@@ -34,17 +35,17 @@ public class UserController {
 		}
 
 		String body = new String(s);
-		System.out.println(body);
+		//System.out.println(body);
 		
 		UserDTO udto = om.readValue(body, UserDTO.class);
 		
 		// Make sure the username and email address are not already in use.
 		if(ud.findByUsername(udto.username) != null) {
 			res.setStatus(400);
-			res.getWriter().println("Username not available, please try again.");
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Username not available, please try again.")));
 		}else if(ud.findByEmail(udto.email) != null) {
 			res.setStatus(400);
-			res.getWriter().println("Email address already used, please use another.");
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Email address already used, please use another.")));
 		}
 		else {
 			User u = us.CreateUser(udto);
@@ -54,7 +55,7 @@ public class UserController {
 				res.getWriter().println(om.writeValueAsString(udto));				
 			}else {
 				res.setStatus(400);
-				res.getWriter().println("User not created.");
+				res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("User not created.")));
 			}
 		}
 		
@@ -103,7 +104,7 @@ public class UserController {
 						
 	}
 	private UserDTO getUserDTO(HttpServletRequest req) throws IOException {
-		System.out.println("Getting DTO from body");
+		//System.out.println("Getting DTO from body");
 		
 		BufferedReader reader = req.getReader();
 		StringBuilder s = new StringBuilder();

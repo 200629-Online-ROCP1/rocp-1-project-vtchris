@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.changeBank.models.users.Role;
-//import com.changeBank.models.users.User;
 import com.changeBank.utils.ConnectionUtil;
 
 public class RoleDao implements IDao<Role> {
@@ -36,23 +35,23 @@ public class RoleDao implements IDao<Role> {
 
 	@Override
 	public Role findById(int id) {
-		System.out.println("Looking Up Role by id");
+		//System.out.println("Looking Up Role by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "SELECT * FROM roles WHERE role_id = ?;";
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1,id);
 			
-			ResultSet result = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
-			if(result.next()) {
+			if(rs.next()) {
 				return new Role(
-						result.getInt("role_id"), 					
-						result.getString("role_name"));
+						rs.getInt("role_id"), 					
+						rs.getString("role_name"));
 			}
 			
 		}catch(SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return null;
 	}

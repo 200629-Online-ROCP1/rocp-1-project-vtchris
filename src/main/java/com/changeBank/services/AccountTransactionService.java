@@ -30,6 +30,7 @@ public class AccountTransactionService {
 			t.setType('W');
 		}else {			
 			t.setTargetAccount(tdto.targetAccount);
+			t.setAcctNbr(tdto.acctNbr);
 			t.setCredit(0);
 			t.setDebit(tdto.amount);
 			t.setMemo("TRANSFER TO #" + tdto.targetAccount.getAcctNbr());

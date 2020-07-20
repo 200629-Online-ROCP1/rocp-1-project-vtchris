@@ -41,24 +41,24 @@ public class AccountTypeDao implements IDao<AccountType> {
 
 	@Override
 	public AccountType findById(int id) {
-		System.out.println("Looking Up Account Type by id");
+		//System.out.println("Looking Up Account Type by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "SELECT * FROM account_types WHERE acct_typ_id = ?";
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1,id);
 			
-			ResultSet result = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
-			if(result.next()) {
+			if(rs.next()) {
 				return new AccountType(
-					result.getInt("acct_typ_id"), 
-					result.getString("acct_typ_name"),
-					result.getDouble("acct_rate"));					
+					rs.getInt("acct_typ_id"), 
+					rs.getString("acct_typ_name"),
+					rs.getDouble("acct_rate"));					
 			}
 			
 		}catch(SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return null;	
 	}
@@ -69,9 +69,8 @@ public class AccountTypeDao implements IDao<AccountType> {
 		return null;
 	}
 	
-	public int getNextAccountNumber(int acct_typ_id) {
-		
-		System.out.println("Looking Up next Account Number");
+	public int getNextAccountNumber(int acct_typ_id) {		
+		//System.out.println("Looking Up next Account Number");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "UPDATE account_types "
@@ -81,14 +80,14 @@ public class AccountTypeDao implements IDao<AccountType> {
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1, acct_typ_id);
 			
-			ResultSet result = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
-			if(result.next()) {
-				return result.getInt("acct_last_nbr");			
+			if(rs.next()) {
+				return rs.getInt("acct_last_nbr");			
 			}
 			
 		}catch(SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return 0;	
 		

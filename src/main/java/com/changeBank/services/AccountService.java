@@ -11,9 +11,9 @@ import com.changeBank.repo.AccountTypeDao;
 
 public class AccountService {
 	
-	private AccountTypeDao atdao = AccountTypeDao.getInstance();
 	private AccountDao adao = AccountDao.getInstance();
 	private AccountStatusDao asdao = AccountStatusDao.getInstance();
+	private AccountTypeDao atdao = AccountTypeDao.getInstance();
 	
 	public Account createAccount(AccountDTO adto) {
 		
@@ -38,9 +38,6 @@ public class AccountService {
 	public List<Account> findAllByUserId(int id) {
 		return adao.findAllByUserId(id);
 	}
-//	public void CreateAccountTransaction(AccountTransactionDTO accountTransactionData) {
-//		
-//	}
 	
 	public Account updateAccount(AccountDTO adto) {
 		

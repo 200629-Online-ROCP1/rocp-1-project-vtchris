@@ -11,20 +11,19 @@ import com.changeBank.repo.UserDao;
 
 public class UserService {
 	
-	private UserDao userDao = UserDao.getInstance();
+	private static final RoleDao rdao = RoleDao.getInstance();
+	private static final UserDao udao = UserDao.getInstance();
 	
 	public User authenticate(UserLoginDTO userLoginData) {
 		
-		return userDao.authenticate(userLoginData);			
+		return udao.authenticate(userLoginData);			
 				
 	}
 
 	public User CreateUser(UserDTO userData) {
-		
-		RoleDao roleDao = RoleDao.getInstance();
-		Role role = roleDao.findById(userData.roleId);
 				
-		UserDao userDao = UserDao.getInstance();
+		Role role = rdao.findById(userData.roleId);
+				
 		User user = new User(
 				userData.username,
 				userData.newPassword,
@@ -33,13 +32,13 @@ public class UserService {
 				userData.email,
 				role);
 				
-		return userDao.insert(user);
+		return udao.insert(user);
 		
 	}	
 	
 	public User updateUser(UserDTO udto, int roleId, int authUserId) {
 				
-		User user = userDao.findById(udto.userId);
+		User user = udao.findById(udto.userId);
 		boolean isChanging = false;
 		
 		// Update fields with new data if not null	
@@ -65,16 +64,15 @@ public class UserService {
 				isChanging = true;
 			}
 			if(udto.roleId > 0 && user.getRole().getRoleId() != udto.roleId) {
-				RoleDao roleDao = RoleDao.getInstance(); 
-				Role userRole = roleDao.findById(udto.roleId);
+				Role userRole = rdao.findById(udto.roleId);
 				user.setRole(userRole);
 				isChanging = true;
 			}		
 		}
 		
 		if(isChanging) {
-			if(userDao.update(user)) {
-				return userDao.findById(udto.userId);
+			if(udao.update(user)) {
+				return udao.findById(udto.userId);
 			}else {
 				return null;
 			}
@@ -85,13 +83,13 @@ public class UserService {
 	
 	public User findById(int id) {
 		
-		return userDao.findById(id);
+		return udao.findById(id);
 		
 	}
 	
 	public List<User> findAll(){
 		
-		return userDao.findAll();
+		return udao.findAll();
 		
 	}
 }

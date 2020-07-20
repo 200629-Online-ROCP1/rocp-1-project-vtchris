@@ -14,13 +14,13 @@ import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserDTO;
 import com.changeBank.repo.AccountDao;
 import com.changeBank.services.AccountService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.changeBank.services.MessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AccountController {
 	
 	private static final AccountService as = new AccountService();
-	private static final AccountDao ad = AccountDao.getInstance();
+	private static final MessageService ms = new MessageService();
 	private static final ObjectMapper om = new ObjectMapper();
 	
 	public void createAccount(HttpServletRequest req, HttpServletResponse res, int roleId, int authUserId) throws IOException {
@@ -35,7 +35,7 @@ public class AccountController {
 				res.getWriter().println(om.writeValueAsString(adto));
 			}else {
 				res.setStatus(400);
-				res.getWriter().println("Account not created.");
+				res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Account not created.")));
 			}
 		}else {
 			res.setStatus(401);
@@ -60,7 +60,6 @@ public class AccountController {
 		if(roleId == 1 || roleId == 2 || a.getUserId() == authUserId) {			
 			AccountDTO adto = getAccountDTO(a);
 			res.setStatus(200);
-			System.out.println("writing return json");
 			res.getWriter().println(om.writeValueAsString(adto));
 		}else {
 			res.setStatus(401);	
@@ -113,12 +112,12 @@ public class AccountController {
 			res.getWriter().println(om.writeValueAsString(adto));
 		}else {
 			res.setStatus(400);
-			res.getWriter().println("Account not created.");
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Account not updated.")));
 		}		
 	}
 	
 	private AccountDTO getAccountDTO(HttpServletRequest req) throws IOException {
-		System.out.println("Getting DTO from body");
+		//System.out.println("Getting DTO from body");
 		
 		BufferedReader reader = req.getReader();
 		StringBuilder s = new StringBuilder();
@@ -136,7 +135,7 @@ public class AccountController {
 	}
 	
 	private AccountDTO getAccountDTO(Account a) {
-		System.out.println("getting dto from account class");
+		//System.out.println("getting dto from account class");
 		System.out.println(a.toString());
 		
 		AccountDTO adto = new AccountDTO();
@@ -150,7 +149,6 @@ public class AccountController {
 		adto.userId = a.getUserId();
 		adto.user = getUserDTO(a.getUser());
 				
-		System.out.println("returning new dto");
 		return adto;
 					
 	}
@@ -169,6 +167,4 @@ public class AccountController {
 		return udto;
 		
 	}
-
-	
 }

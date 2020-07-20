@@ -41,6 +41,7 @@ public class AccountTransactionController {
 							
 							if(tdto.type == 'T') {
 								tdto.targetAccount = adao.findById(tdto.targetAccountId);
+								tdto.acctNbr = a.getAcctNbr();
 								//Confirm target account exists
 								if(tdto.targetAccount == null) {
 									res.setStatus(400);
@@ -63,7 +64,7 @@ public class AccountTransactionController {
 								}else if(tdto.type == 'W') {
 									res.getWriter().println(om.writeValueAsString(ms.getMessageDTO(money + " has been withdrawn from Account #" + a.getAcctNbr())));
 								}else {
-									res.getWriter().println(om.writeValueAsString(ms.getMessageDTO(money + " has been transfered from Account #" + a.getAcctNbr() + " to Account:" + a.getAccountId())));
+									res.getWriter().println(om.writeValueAsString(ms.getMessageDTO(money + " has been transfered from Account #" + a.getAcctNbr() + " to Account:" + tdto.targetAccount.getAcctNbr())));
 								}
 							}else {
 								res.setStatus(500);
@@ -96,7 +97,7 @@ public class AccountTransactionController {
 	}
 
 	private AccountTransactionDTO getAccountTransationDTO(HttpServletRequest req) throws IOException  {
-		System.out.println("Getting DTO from body");
+		//System.out.println("Getting DTO from body");
 		
 		BufferedReader reader = req.getReader();
 		StringBuilder s = new StringBuilder();
@@ -108,7 +109,7 @@ public class AccountTransactionController {
 		}
 
 		String body = new String(s);
-		System.out.println(body);
+		//System.out.println(body);
 		
 		return om.readValue(body, AccountTransactionDTO.class);
 	}

@@ -13,12 +13,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.login.LoginException;
 
 public class UserDao implements IDao<User> {	
+	
+	private static final RoleDao rdao = RoleDao.getInstance();
 
 	// This is a design pattern called a "singleton" where only one implementation 
 	// of a class can exist at a time.
@@ -31,7 +32,7 @@ public class UserDao implements IDao<User> {
 	
 	@Override
 	public User insert(User user) {
-		System.out.println("Inserting New User");
+		//System.out.println("Inserting New User");
 		
 		user.setPassword(hashPassword(user.getPassword().trim()));
 
@@ -86,27 +87,27 @@ public class UserDao implements IDao<User> {
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1,id);
 			
-			ResultSet result = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
-			if(result.next()) {
+			if(rs.next()) {
 				return new User(
-						result.getInt("user_id"), 
-						result.getString("username"),
-						result.getString("pword"),
-						result.getString("first_name"), 
-						result.getString("last_name"),
-						result.getString("email"),
-						getRoleById(result.getInt("role_id_fk")));
+						rs.getInt("user_id"), 
+						rs.getString("username"),
+						rs.getString("pword"),
+						rs.getString("first_name"), 
+						rs.getString("last_name"),
+						rs.getString("email"),
+						getRoleById(rs.getInt("role_id_fk")));
 			}
 			
 		}catch(SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return null;		
 	}
 	
 	public User findByEmail(String email) {
-		System.out.println("Looking Up User by email");
+		//System.out.println("Looking Up User by email");
 		
 		email = email.trim().toLowerCase();
 		
@@ -122,7 +123,7 @@ public class UserDao implements IDao<User> {
 			}
 			
 		}catch(SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return null;	
 		
@@ -145,7 +146,7 @@ public class UserDao implements IDao<User> {
 			}
 			
 		}catch(SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return null;	
 		
@@ -201,27 +202,27 @@ public class UserDao implements IDao<User> {
 			statement.setString(1,login.username);
 			statement.setString(2,login.password);
 			
-			ResultSet result = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
-			if(result.next()) {
+			if(rs.next()) {
 				return new User(
-						result.getInt("user_id"), 
-						result.getString("username"),
-						result.getString("pword"), 						
-						result.getString("first_name"), 
-						result.getString("last_name"),
-						result.getString("email"),
-						getRoleById(result.getInt("role_id_fk")));
+						rs.getInt("user_id"), 
+						rs.getString("username"),
+						rs.getString("pword"), 						
+						rs.getString("first_name"), 
+						rs.getString("last_name"),
+						rs.getString("email"),
+						getRoleById(rs.getInt("role_id_fk")));
 			}else{
 				throw new LoginException("Username or password do not match.");
 			}
 			
 			
 		}catch(SQLException e) {
-			System.out.println(e);	
+			e.printStackTrace();
 			
 		}catch(LoginException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -261,14 +262,14 @@ public class UserDao implements IDao<User> {
 			return true;
 						
 		}catch(SQLException e) {
-			System.out.println(e);	
+			e.printStackTrace();
 			
 		}
 		return false;
 	}
 	private Role getRoleById(int id) {
-		RoleDao roleDao = RoleDao.getInstance();
-		Role role = roleDao.findById(id);	
+		
+		Role role = rdao.findById(id);	
 		return role;
 	}
 	private User getPopulatedModel(ResultSet rs) {
