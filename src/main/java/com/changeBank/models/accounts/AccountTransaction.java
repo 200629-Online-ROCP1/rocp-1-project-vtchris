@@ -6,14 +6,16 @@ public class AccountTransaction {
 	
 	private int		transactionId;
 	private int 	accountId;
+	private char	type;
 	private float	debit;			
 	private float	credit;
 	private float	signedAmount;
 	private float	runningBalance;
-	private int		status;
+	private char	status;
 	private String	memo;
 	private int		userId; //Initiated transaction
 	private Date 	transactionDt;
+	private Account	targetAccount; //Only Populated for type=T transfers
 	
 	public AccountTransaction() {
 		super();
@@ -67,11 +69,11 @@ public class AccountTransaction {
 		this.runningBalance = runningBalance;
 	}
 
-	public int getStatus() {
+	public char getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(char status) {
 		this.status = status;
 	}
 
@@ -98,5 +100,20 @@ public class AccountTransaction {
 	public void setTransactionDt(Date transactionDt) {
 		this.transactionDt = transactionDt;
 	}
-	
+
+	public char getType() {
+		return type;
+	}
+
+	public void setType(char type) {
+		this.type = type;
+	}
+
+	public Account getTargetAccount() {
+		return targetAccount;
+	}
+
+	public void setTargetAccount(Account targetAccount) {
+		this.targetAccount = targetAccount;
+	}	
 }

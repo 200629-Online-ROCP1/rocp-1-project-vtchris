@@ -14,6 +14,7 @@ import com.changeBank.controllers.AccountTransactionController;
 import com.changeBank.controllers.LoginController;
 import com.changeBank.controllers.UserController;
 
+@SuppressWarnings("serial")
 public class MasterServlet extends HttpServlet {
 	
 	private static final AccountController ac = new AccountController();
@@ -64,6 +65,7 @@ public class MasterServlet extends HttpServlet {
 		case "accounts":
 			if (METHOD.equals("GET")) {
 				if(URIparts.length == 1) {
+					// Must be an employee to access
 					if(roleId == 1 || roleId == 2) {
 						ac.findAll(req, res);
 					}else {

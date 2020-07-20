@@ -73,6 +73,30 @@ public class AccountDao implements IDao<Account> {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	protected boolean updateBalance(int id, float bal) {
+		System.out.println("Updating Balance");
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setFloat(1, bal);
+			statement.setInt(2, id);
+			
+			int rows = statement.executeUpdate();
+			
+			if(rows > 0) {
+				return true;
+			}else {
+				return false;
+			}			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 	public Account updateStatus(Account account) {
 		System.out.println("Updating Status");
 		
