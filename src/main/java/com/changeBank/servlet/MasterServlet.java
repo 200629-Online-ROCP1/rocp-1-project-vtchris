@@ -32,7 +32,7 @@ public class MasterServlet extends HttpServlet {
 		//System.out.println("In MasterServlet doPost");
 		router(req,res);
 	}
-	
+		
 	protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
 		//System.out.println("In MasterServlet doPut");
 		router(req,res);
@@ -94,7 +94,7 @@ public class MasterServlet extends HttpServlet {
 						
 					}else {
 						// Bad Request - unknown path
-						res.setStatus(400);
+						res.setStatus(400);						
 					}
 				}				
 			}else if (METHOD.equals("POST")) {

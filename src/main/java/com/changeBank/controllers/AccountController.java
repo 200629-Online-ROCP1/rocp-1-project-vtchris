@@ -3,6 +3,7 @@ package com.changeBank.controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AccountController {
 	
+	private static final AccountDao adao = AccountDao.getInstance();
 	private static final AccountService as = new AccountService();
 	private static final MessageService ms = new MessageService();
 	private static final ObjectMapper om = new ObjectMapper();
@@ -104,8 +106,31 @@ public class AccountController {
 	public void updateAccount(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		
 		AccountDTO adto = getAccountDTO(req);
+		Account a = adao.findById(adto.accountId);
 		
-		Account a = as.updateAccount(adto);
+		System.out.println(adto.statusId);
+		System.out.println(a.getStatus().getAccountStatusId());
+		//1=Pending, 2=Open, 3=Frozen, 4=Closed, 5=Denied
+		switch (a.getStatus().getAccountStatusId()) {
+		
+		case 1:
+			System.out.println("in the case");
+			//Integer[] bad = {1,3,4};
+			//Integer tryW = new Integer(1);
+			if(Arrays.asList(new Integer[] {1,3,4}).contains(new Integer(adto.statusId)) ) {
+				System.out.println("on the list");
+				res.setStatus(400);
+				res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("new message.")));
+				return;
+			}
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		}
+		
+		
+		a = as.updateAccount(adto);
 		if(a != null) {
 			adto = getAccountDTO(a);
 			res.setStatus(200);
