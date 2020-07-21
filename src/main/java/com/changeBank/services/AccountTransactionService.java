@@ -17,7 +17,11 @@ public class AccountTransactionService {
 		if(tdto.type == 'D') {
 			t.setCredit(tdto.amount);
 			t.setDebit(0);
-			t.setMemo("DEPOSIT");
+			if(tdto.memo == null) {
+				t.setMemo("DEPOSIT");
+			}else {
+				t.setMemo(tdto.memo);
+			}			
 			t.setRunningBalance(tdto.account.getBalance() + tdto.amount);
 			t.setSignedAmount(tdto.amount);	
 			t.setType('D');
@@ -38,7 +42,7 @@ public class AccountTransactionService {
 			t.setSignedAmount(tdto.amount * -1);	
 			t.setType('T');
 		}
-		
+				
 		if(tdao.insert(t) != null) {
 			return true;
 		}else {

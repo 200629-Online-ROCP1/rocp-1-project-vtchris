@@ -184,6 +184,32 @@ public class AccountDao implements IDao<Account> {
 		}
 		return null;
 	}
+	public List<Account>  findAllInterestBearingAccounts() {
+		
+		List<Account> accounts = new ArrayList<>();
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql =  "SELECT account_id "
+						+ "FROM account_types t "
+						+ "INNER JOIN accounts a ON t.acct_typ_id = a.acct_typ_id_fk "
+						+ "WHERE acct_rate > 0 AND balance > 0;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			
+			ResultSet rs = statement.executeQuery();
+			
+			while(rs.next()) {
+				accounts.add(this.findById(rs.getInt("account_id")));
+			}
+			
+			return accounts;
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+	
+		return null;
+		
+	}
 	
 	public List<Account>  findAllByStatusId(int id) {
 		//System.out.println("Looking Up Account by Status id");

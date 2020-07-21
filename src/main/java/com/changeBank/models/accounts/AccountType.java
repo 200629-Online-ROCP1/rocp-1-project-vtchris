@@ -4,24 +4,24 @@ public class AccountType {
 	
 	private int typeId;
 	private String type;
-	private Double acctRate;
+	private float acctRate;
 	
 	public AccountType() {
 		super();
 	}
 	
-	public AccountType(int accountTypeId, String accountTypeName, double acctRate) {
+	public AccountType(int accountTypeId, String accountTypeName, float acctRate) {
 		super();
 		this.typeId = accountTypeId;
 		this.type = accountTypeName;
 		this.acctRate = acctRate;
 	}
 	
-	public Double getAcctRate() {
+	public float getAcctRate() {
 		return acctRate;
 	}
 
-	public void setAcctRate(Double acctRate) {
+	public void setAcctRate(float acctRate) {
 		this.acctRate = acctRate;
 	}
 

@@ -54,7 +54,7 @@ public class AccountTypeDao implements IDao<AccountType> {
 				return new AccountType(
 					rs.getInt("acct_typ_id"), 
 					rs.getString("acct_typ_name"),
-					rs.getDouble("acct_rate"));					
+					rs.getFloat("acct_rate"));					
 			}
 			
 		}catch(SQLException e) {

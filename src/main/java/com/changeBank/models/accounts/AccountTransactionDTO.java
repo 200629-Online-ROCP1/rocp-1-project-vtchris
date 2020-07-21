@@ -10,5 +10,6 @@ public class AccountTransactionDTO {
 	public int targetAccountId;
 	public Account	targetAccount; //Only Populated for type=T transfers
 	public int userId;
+	public String memo;
 	
 }

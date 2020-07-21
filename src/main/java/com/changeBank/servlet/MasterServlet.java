@@ -104,8 +104,15 @@ public class MasterServlet extends HttpServlet {
 					String path2 = URIparts[1];
 					if(path2.equals("transactions")) {
 						tc.createTransaction(req, res, roleId, authUserId);
+					}else if(path2.equals("interest"))  {
+						// Must be an admin can run
+						if(roleId == 1) {
+							ac.createInterest(req, res, authUserId);
+						}else {
+							res.setStatus(401);	
+						}
 					}else {
-						res.setStatus(401);	
+						res.setStatus(405);	
 					}					
 				}
 			}else if (METHOD.equals("PUT")) {
