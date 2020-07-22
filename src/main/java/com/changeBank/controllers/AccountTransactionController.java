@@ -9,14 +9,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.changeBank.models.accounts.Account;
 import com.changeBank.models.accounts.AccountTransactionDTO;
-import com.changeBank.repo.AccountDao;
+import com.changeBank.services.AccountService;
 import com.changeBank.services.AccountTransactionService;
 import com.changeBank.services.MessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AccountTransactionController {
 	
-	private static final AccountDao adao = AccountDao.getInstance();
+	//private static final AccountDao adao = AccountDao.getInstance();
+	private static final AccountService as = new AccountService();
 	private static final AccountTransactionService ts = new AccountTransactionService();
 	private static final MessageService ms = new MessageService();
 	private static final ObjectMapper om = new ObjectMapper();
@@ -25,7 +26,7 @@ public class AccountTransactionController {
 	public void createTransaction(HttpServletRequest req, HttpServletResponse res, int roleId, int authUserId) throws IOException {
 		
 		AccountTransactionDTO tdto = getAccountTransationDTO(req);
-		Account a = adao.findById(tdto.accountId);
+		Account a = as.findById(tdto.accountId);
 		tdto.account = a;
 		tdto.userId = authUserId;
 		
@@ -40,7 +41,7 @@ public class AccountTransactionController {
 						if(tdto.type == 'D' || a.getStatus().getAccountStatusId() == 2) {
 							
 							if(tdto.type == 'T') {
-								tdto.targetAccount = adao.findById(tdto.targetAccountId);
+								tdto.targetAccount = as.findById(tdto.targetAccountId);
 								tdto.acctNbr = a.getAcctNbr();
 								//Confirm target account exists
 								if(tdto.targetAccount == null) {

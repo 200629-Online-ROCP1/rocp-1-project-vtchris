@@ -31,7 +31,7 @@ public class AccountStatusDao implements IDao<AccountStatus> {
 			return false;
 		}
 		@Override
-		public boolean delete(AccountStatus t) {
+		public boolean delete(AccountStatus t, int id) {
 			// TODO Auto-generated method stub
 			return false;
 		}

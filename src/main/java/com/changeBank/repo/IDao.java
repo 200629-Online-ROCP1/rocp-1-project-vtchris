@@ -6,7 +6,7 @@ import java.util.Set;
 public interface IDao<T> {
 	public T insert(T t);
 	public boolean update(T t);
-	public boolean delete(T t);
+	public boolean delete(T t, int id);
 	
 	public T findById(int id);	
 	public Set<T> selectAll();

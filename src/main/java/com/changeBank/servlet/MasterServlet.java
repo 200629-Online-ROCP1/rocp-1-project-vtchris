@@ -13,7 +13,6 @@ import com.changeBank.controllers.AccountController;
 import com.changeBank.controllers.AccountTransactionController;
 import com.changeBank.controllers.LoginController;
 import com.changeBank.controllers.UserController;
-import com.changeBank.services.MessageService;
 
 @SuppressWarnings("serial")
 public class MasterServlet extends HttpServlet {
@@ -58,9 +57,9 @@ public class MasterServlet extends HttpServlet {
 					
 		final String URI = req.getRequestURI().replace("/rocp-project/api/", "");	
 		final String METHOD = req.getMethod();
-		String[] URIparts = URI.split("/");
-				
+		String[] URIparts = URI.split("/");				
 		System.out.println(Arrays.toString(URIparts));
+		//System.out.println(req.getQueryString());
 				
 		switch(URIparts[0]) {
 		case "accounts":
@@ -105,7 +104,7 @@ public class MasterServlet extends HttpServlet {
 					if(path2.equals("transactions")) {
 						tc.createTransaction(req, res, roleId, authUserId);
 					}else if(path2.equals("interest"))  {
-						// Must be an admin can run
+						// Must be an admin to run
 						if(roleId == 1) {
 							ac.createInterest(req, res, authUserId);
 						}else {
@@ -151,13 +150,21 @@ public class MasterServlet extends HttpServlet {
 					res.setStatus(401);		
 				}
 			}else if(METHOD.equals("POST")) {
+				//Only and admin can perform this function
 				if(roleId == 1) {
 					uc.createUser(req, res);
 				}else {
 					res.setStatus(401);		
 				}				
 			}else if(METHOD.equals("PUT")) {
-					uc.updateUser(req, res, roleId, authUserId);
+					uc.updateUser(req, res, roleId, authUserId);					
+			}else if(METHOD.equals("DELETE")) {
+						//Only and admin can perform this function
+						if(roleId == 1) {
+							uc.deleteUser(req, res, authUserId);
+						}else {
+							res.setStatus(401);	
+						}
 			}else {
 				res.setStatus(405);	
 			}

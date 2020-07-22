@@ -10,6 +10,7 @@ public class User {
 	private String lastName; // not null
 	private String email; // not null
 	private Role role;
+	private int authUserId;
 	
 	public User() {
 		super();
@@ -45,6 +46,14 @@ public class User {
 		this.lastName = lastName;
 		this.email = email;
 		this.role = role;
+	}
+	
+	public int getAuthUserId() {
+		return authUserId;
+	}
+
+	public void setAuthUserId(int authUserId) {
+		this.authUserId = authUserId;
 	}
 	
 	public String getPasswordNew() {
@@ -116,7 +125,5 @@ public class User {
 		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
 				+ firstName + ", lastName=" + lastName + ", email=" + email + ", role=" + role + "]";
 	}
-	
-	
 		
 }

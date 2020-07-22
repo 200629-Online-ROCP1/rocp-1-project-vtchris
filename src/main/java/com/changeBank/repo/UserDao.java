@@ -73,8 +73,37 @@ public class UserDao implements IDao<User> {
 	}
 
 	@Override
-	public boolean delete(User t) {
-		// TODO Auto-generated method stub
+	public boolean delete(User u, int authUserId) {
+
+		try(Connection conn = ConnectionUtil.getConnection();){
+			//First copy user to archive
+			String sql = "INSERT INTO archive_users "
+					+ "(user_id,first_name,last_name,"
+					+ "username,pword,email,role_id_fk,created_at,deleted_by) "
+					+ "SELECT  user_id,first_name,last_name,"
+					+ "username,pword,email,role_id_fk,created_at, ? " 
+					+ "FROM users "
+					+ "WHERE user_id = ?;";						
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1,authUserId);
+			statement.setInt(2,u.getUserId());
+			
+			int iCount = statement.executeUpdate();
+			
+			sql = 	"DELETE "
+					+ "FROM users "
+					+ "WHERE user_id = ?;";						
+			statement = conn.prepareStatement(sql);
+			statement.setInt(1,u.getUserId());
+			
+			int dCount = statement.executeUpdate();
+						
+			//Did you delete the same # of transactions as you moved to archive
+			return iCount == dCount;
+							
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 

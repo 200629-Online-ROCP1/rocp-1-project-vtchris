@@ -22,6 +22,45 @@ public class AccountTransactionDao implements IDao<AccountTransaction> {
 		public static AccountTransactionDao getInstance() {
 			return repo;
 		}
+		public boolean deleteAccountTransactions(AccountTransaction t) {
+			
+			//First, copy transactions to archive
+			try(Connection conn = ConnectionUtil.getConnection();){
+				String sql = "INSERT INTO archive_account_transactions "
+						+ "(transaction_id,account_id_fk,trans_type,"
+						+ "debit,credit,signed_amount,running_balance,"
+						+ "status,memo,user_id_fk,transaction_dt,deleted_by) "
+						+ "SELECT  transaction_id,account_id_fk,trans_type, "
+						+ "debit,credit,signed_amount,running_balance," 
+						+ "status,memo,user_id_fk,transaction_dt, ?  "
+						+ "FROM account_transactions "
+						+ "WHERE account_id_fk = ?;";						
+				PreparedStatement statement = conn.prepareStatement(sql);
+				statement.setInt(1,t.getUserId());
+				statement.setInt(2,t.getAccountId());
+				
+				int iCount = statement.executeUpdate();
+				
+				sql = 	"DELETE "
+						+ "FROM account_transactions "
+						+ "WHERE account_id_fk = ?;";						
+				statement = conn.prepareStatement(sql);
+				statement.setInt(1,t.getAccountId());
+				
+				int dCount = statement.executeUpdate();
+				
+//				System.out.println(iCount);
+//				System.out.println(dCount);
+				
+				//Did you delete the same # of transactions as you moved to archive
+				return iCount == dCount;
+								
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			return false;
+			
+		}
 		@Override
 		public AccountTransaction insert(AccountTransaction t) {
 			System.out.println("Inserting New Transaction");
@@ -109,7 +148,7 @@ public class AccountTransactionDao implements IDao<AccountTransaction> {
 			return false;
 		}
 		@Override
-		public boolean delete(AccountTransaction t) {
+		public boolean delete(AccountTransaction t, int id) {
 			// TODO Auto-generated method stub
 			return false;
 		}
@@ -132,4 +171,5 @@ public class AccountTransactionDao implements IDao<AccountTransaction> {
 			// TODO Auto-generated method stub
 			return false;
 		}
+		
 }

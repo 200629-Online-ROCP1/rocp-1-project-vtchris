@@ -2,7 +2,6 @@ package com.changeBank.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +13,6 @@ import com.changeBank.models.accounts.Account;
 import com.changeBank.models.accounts.AccountDTO;
 import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserDTO;
-import com.changeBank.repo.AccountDao;
 import com.changeBank.services.AccountService;
 import com.changeBank.services.MessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -141,7 +139,7 @@ public class AccountController {
 			}
 		case 2:
 			if(Arrays.asList(new Integer[] {1,4,5}).contains(new Integer(adto.statusId)) ) {
-				if(a.getAcctNbr() != 0) {
+				if(a.getBalance() != 0) {
 					res.setStatus(400);
 					res.getWriter().println(om.writeValueAsString(ms.getMessageDTO(a.getStatus().getAccountStatus() + " accounts with a BALANCE cannot be changed to the requested status.")));
 					return;
@@ -149,7 +147,7 @@ public class AccountController {
 			}
 		case 3:
 			if(Arrays.asList(new Integer[] {1,5}).contains(new Integer(adto.statusId)) ) {
-				if(a.getAcctNbr() != 0) {
+				if(a.getBalance() != 0) {
 					res.setStatus(400);
 					res.getWriter().println(om.writeValueAsString(ms.getMessageDTO(a.getStatus().getAccountStatus() + " accounts with a BALANCE cannot be changed to the requested status.")));
 					return;

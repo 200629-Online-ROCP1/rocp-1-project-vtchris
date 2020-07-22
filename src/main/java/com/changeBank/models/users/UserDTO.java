@@ -10,5 +10,6 @@ public class UserDTO {
 	public String email;
 	public int roleId;
 	public Role role;
+	public int authUserId; //Who is logged in
 
 }

@@ -1,5 +1,6 @@
 package com.changeBank.services;
 
+import com.changeBank.models.accounts.Account;
 import com.changeBank.models.accounts.AccountTransaction;
 import com.changeBank.models.accounts.AccountTransactionDTO;
 import com.changeBank.repo.AccountTransactionDao;
@@ -49,6 +50,15 @@ public class AccountTransactionService {
 			return false;
 		}		
 	
+	}
+
+	public boolean deleteAccountTransactions(Account a, int authUserId) {
+		AccountTransaction t = new AccountTransaction();
+		t.setAccountId(a.getAccountId());
+		t.setUserId(authUserId);
+		
+		return tdao.deleteAccountTransactions(t);		
+		
 	}
 
 }

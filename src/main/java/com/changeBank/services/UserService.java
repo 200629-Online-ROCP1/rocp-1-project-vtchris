@@ -2,6 +2,7 @@ package com.changeBank.services;
 
 import java.util.List;
 
+import com.changeBank.models.accounts.Account;
 import com.changeBank.models.users.Role;
 import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserDTO;
@@ -11,30 +12,63 @@ import com.changeBank.repo.UserDao;
 
 public class UserService {
 	
+	private static final AccountService as = new AccountService();
+	private static final AccountTransactionService ts = new AccountTransactionService();
 	private static final RoleDao rdao = RoleDao.getInstance();
 	private static final UserDao udao = UserDao.getInstance();
 	
-	public User authenticate(UserLoginDTO userLoginData) {
+	public User authenticate(UserLoginDTO uldto) {
 		
-		return udao.authenticate(userLoginData);			
-				
+		return udao.authenticate(uldto);		
+		
 	}
 
-	public User CreateUser(UserDTO userData) {
+	public User CreateUser(UserDTO udto) {
 				
-		Role role = rdao.findById(userData.roleId);
+		Role role = rdao.findById(udto.roleId);
 				
 		User user = new User(
-				userData.username,
-				userData.newPassword,
-				userData.firstName,
-				userData.lastName,
-				userData.email,
+				udto.username,
+				udto.newPassword,
+				udto.firstName,
+				udto.lastName,
+				udto.email,
 				role);
 				
 		return udao.insert(user);
 		
 	}	
+	
+	public boolean deleteUser(UserDTO udto, List<Account> accounts) {
+		
+		User u = new User();
+		u.setUserId(udto.userId);
+		u.setAuthUserId(udto.authUserId);
+				
+		if(accounts != null) {
+			for(Account a: accounts) {				
+				if(ts.deleteAccountTransactions(a, udto.authUserId)) {
+					if(!as.deleteAccountById(a, udto.authUserId)){
+						return false;
+					}
+				}else {
+					return false;
+				}
+			}
+		}
+		
+		return udao.delete(u, udto.authUserId);		
+		
+	}
+	
+
+	public User findByEmail(String email) {
+		return udao.findByEmail(email);
+	}
+	
+	public User findByUsername(String username) {
+		return udao.findByUsername(username);
+	}
 	
 	public User updateUser(UserDTO udto, int roleId, int authUserId) {
 				
@@ -92,4 +126,7 @@ public class UserService {
 		return udao.findAll();
 		
 	}
+
+	
+	
 }

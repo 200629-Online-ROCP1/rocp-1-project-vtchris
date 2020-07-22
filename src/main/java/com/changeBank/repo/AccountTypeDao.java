@@ -34,7 +34,7 @@ public class AccountTypeDao implements IDao<AccountType> {
 	}
 
 	@Override
-	public boolean delete(AccountType t) {
+	public boolean delete(AccountType t, int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -31,6 +31,42 @@ public class AccountDao implements IDao<Account> {
 		return repo;
 	}
 	
+	public boolean deleteAccountById(Account a, int authUserId) {
+		//First, copy account to archive
+		try(Connection conn = ConnectionUtil.getConnection();){
+			String sql = "INSERT INTO archive_accounts "
+					+ "(account_id,user_id_fk, acct_nbr,balance,"
+					+ "acct_status_id_fk,acct_typ_id_fk,created_at,deleted_by) "
+					+ "SELECT  account_id,user_id_fk,acct_nbr,balance, "
+					+ "acct_status_id_fk,acct_typ_id_fk,created_at, ? " 
+					+ "FROM accounts "
+					+ "WHERE account_id = ?;";						
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1,authUserId);
+			statement.setInt(2,a.getAccountId());
+			
+			int iCount = statement.executeUpdate();
+			
+			sql = 	"DELETE "
+					+ "FROM accounts "
+					+ "WHERE account_id = ?;";						
+			statement = conn.prepareStatement(sql);
+			statement.setInt(1,a.getAccountId());
+			
+			int dCount = statement.executeUpdate();
+			
+//			System.out.println(iCount);
+//			System.out.println(dCount);
+			
+			//Did you delete the same # of transactions as you moved to archive
+			return iCount == dCount;
+							
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	@Override
 	public Account insert(Account account) {
 		//System.out.println("Inserting New Account");
@@ -121,7 +157,7 @@ public class AccountDao implements IDao<Account> {
 		return null;		
 	}
 	@Override
-	public boolean delete(Account t) {
+	public boolean delete(Account t, int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -297,5 +333,6 @@ public class AccountDao implements IDao<Account> {
 	private User findUserById(int id) {
 		return udao.findById(id);
 	}
+	
 		
 }

@@ -15,7 +15,7 @@ import com.changeBank.repo.AccountTypeDao;
 public class AccountService {
 	
 	private AccountDao adao = AccountDao.getInstance();
-	private AccountStatusDao asdao = AccountStatusDao.getInstance();
+	private AccountStatusDao asdao = AccountStatusDao.getInstance();	
 	private AccountTransactionService ts = new AccountTransactionService();
 	private AccountTypeDao atdao = AccountTypeDao.getInstance();
 	private NumberFormat fpercent = NumberFormat.getPercentInstance();
@@ -58,6 +58,10 @@ public class AccountService {
 		
 	}
 	
+	public boolean deleteAccountById(Account a, int authUserId) {
+		return adao.deleteAccountById(a, authUserId);
+	}
+	
 	public List<Account> findAll() {
 		return adao.findAll();
 	}
@@ -86,4 +90,8 @@ public class AccountService {
 		}		
 		
 	}
+
+	
+
+	
 }

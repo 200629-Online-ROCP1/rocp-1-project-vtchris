@@ -8,18 +8,19 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.changeBank.models.accounts.Account;
 import com.changeBank.models.users.User;
 import com.changeBank.models.users.UserDTO;
-import com.changeBank.repo.UserDao;
+import com.changeBank.services.AccountService;
 import com.changeBank.services.MessageService;
 import com.changeBank.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserController {
 	
+	private static final AccountService as = new AccountService();
 	private static final MessageService ms = new MessageService();
 	private static final ObjectMapper om = new ObjectMapper();
-	private static final UserDao ud = UserDao.getInstance();
 	private static final UserService us = new UserService();
 	
 
@@ -40,10 +41,10 @@ public class UserController {
 		UserDTO udto = om.readValue(body, UserDTO.class);
 		
 		// Make sure the username and email address are not already in use.
-		if(ud.findByUsername(udto.username) != null) {
+		if(us.findByUsername(udto.username) != null) {
 			res.setStatus(400);
 			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Username not available, please try again.")));
-		}else if(ud.findByEmail(udto.email) != null) {
+		}else if(us.findByEmail(udto.email) != null) {
 			res.setStatus(400);
 			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Email address already used, please use another.")));
 		}
@@ -60,6 +61,46 @@ public class UserController {
 		}
 		
 	}
+	
+	public void deleteUser(HttpServletRequest req, HttpServletResponse res, int authUserId) throws IOException {
+		
+		UserDTO udto = this.getUserDTO(req);
+		udto.authUserId = authUserId;
+		
+		//Check to see if you are deleting the user you are currently logged in with
+		if(udto.userId == authUserId) {
+			res.setStatus(400);
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("You are logged in with this user, you cannot delete it.")));
+			return;
+		}
+		
+		//Make sure User has no active accounts
+		List<Account> accounts = as.findAllByUserId(udto.userId);
+		boolean isActive = false;
+		
+		for(Account a: accounts) {
+			if(a.getStatus().getAccountStatusId() < 4 ) {
+				isActive = true;
+			}
+		}
+		
+		
+		if(isActive) {
+			res.setStatus(400);
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Cannot delete users with accounts that are not CLOSED or DENIED.")));
+		}else {
+		
+			if(us.deleteUser(udto, accounts)) {
+				res.setStatus(200);
+				res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("User deleted.")));
+			}else {
+				res.setStatus(500);
+				res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("User could not be deleted.")));
+			}
+			
+		}		
+	}
+	
 	public void findAll(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		
 		List<User> users = us.findAll();
@@ -137,4 +178,5 @@ public class UserController {
 	    }
 		
 	}
+	
 }

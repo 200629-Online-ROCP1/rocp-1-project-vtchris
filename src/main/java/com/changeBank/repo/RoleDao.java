@@ -28,7 +28,7 @@ public class RoleDao implements IDao<Role> {
 	}
 
 	@Override
-	public boolean delete(Role t) {
+	public boolean delete(Role t, int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
