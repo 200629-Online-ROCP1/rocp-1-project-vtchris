@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import com.changeBank.models.accounts.AccountType;
 import com.changeBank.utils.ConnectionUtil;
@@ -61,12 +60,6 @@ public class AccountTypeDao implements IDao<AccountType> {
 			e.printStackTrace();
 		}
 		return null;	
-	}
-
-	@Override
-	public Set<AccountType> selectAll() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	public int getNextAccountNumber(int acct_typ_id) {		

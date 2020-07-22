@@ -60,10 +60,21 @@ public class UserService {
 		return udao.delete(u, udto.authUserId);		
 		
 	}
+		
+	public List<User> findAll(){
+		
+		return udao.findAll();
+		
+	}
 	
-
 	public User findByEmail(String email) {
 		return udao.findByEmail(email);
+	}
+	
+	public User findById(int id) {
+		
+		return udao.findById(id);
+		
 	}
 	
 	public User findByUsername(String username) {
@@ -114,19 +125,5 @@ public class UserService {
 				
 		return null;				
 	}
-	
-	public User findById(int id) {
-		
-		return udao.findById(id);
-		
-	}
-	
-	public List<User> findAll(){
-		
-		return udao.findAll();
-		
-	}
-
-	
 	
 }

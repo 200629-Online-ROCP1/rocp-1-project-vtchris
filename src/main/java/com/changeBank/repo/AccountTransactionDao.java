@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Set;
 
 import com.changeBank.models.accounts.AccountTransaction;
 import com.changeBank.utils.ConnectionUtil;
@@ -157,11 +156,7 @@ public class AccountTransactionDao implements IDao<AccountTransaction> {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		@Override
-		public Set<AccountTransaction> selectAll() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		
 		@Override
 		public List<AccountTransaction> findAll() {
 			// TODO Auto-generated method stub

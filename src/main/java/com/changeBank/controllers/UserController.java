@@ -23,22 +23,23 @@ public class UserController {
 	private static final ObjectMapper om = new ObjectMapper();
 	private static final UserService us = new UserService();
 	
-
 	public void createUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		
-		BufferedReader reader = req.getReader();
-		StringBuilder s = new StringBuilder();
-		String line = reader.readLine();
-
-		while (line != null) {
-			s.append(line);
-			line = reader.readLine();
-		}
-
-		String body = new String(s);
-		//System.out.println(body);
+		UserDTO udto = this.getUserDTO(req);
 		
-		UserDTO udto = om.readValue(body, UserDTO.class);
+//		BufferedReader reader = req.getReader();
+//		StringBuilder s = new StringBuilder();
+//		String line = reader.readLine();
+//
+//		while (line != null) {
+//			s.append(line);
+//			line = reader.readLine();
+//		}
+//
+//		String body = new String(s);
+//		//System.out.println(body);
+//		
+//		UserDTO udto = om.readValue(body, UserDTO.class);
 		
 		// Make sure the username and email address are not already in use.
 		if(us.findByUsername(udto.username) != null) {
@@ -129,38 +130,7 @@ public class UserController {
 		
 		
 	}
-	private UserDTO getUserDTO(User u) {
 	
-			UserDTO udto = new UserDTO();
-			udto.userId = u.getUserId();
-			udto.username = u.getUsername();				
-			udto.newPassword = null;
-			udto.firstName = u.getFirstName();
-			udto.lastName = u.getLastName();
-			udto.email = u.getEmail();
-			udto.roleId = u.getRole().getRoleId();
-			udto.role = u.getRole();
-			
-			return udto;
-						
-	}
-	private UserDTO getUserDTO(HttpServletRequest req) throws IOException {
-		//System.out.println("Getting DTO from body");
-		
-		BufferedReader reader = req.getReader();
-		StringBuilder s = new StringBuilder();
-		String line = reader.readLine();
-
-		while (line != null) {
-			s.append(line);
-			line = reader.readLine();
-		}
-
-		String body = new String(s);
-		System.out.println(body);
-		
-		return om.readValue(body, UserDTO.class);
-	}
 	public void updateUser(HttpServletRequest req, HttpServletResponse res, int roleId, int authUserId) throws IOException {
 		
 		UserDTO udto = getUserDTO(req);
@@ -178,5 +148,38 @@ public class UserController {
 	    }
 		
 	}
+
+	private UserDTO getUserDTO(User u) {
 	
+			UserDTO udto = new UserDTO();
+			udto.userId = u.getUserId();
+			udto.username = u.getUsername();				
+			udto.newPassword = null;
+			udto.firstName = u.getFirstName();
+			udto.lastName = u.getLastName();
+			udto.email = u.getEmail();
+			udto.roleId = u.getRole().getRoleId();
+			udto.role = u.getRole();
+			
+			return udto;
+						
+	}
+	
+	private UserDTO getUserDTO(HttpServletRequest req) throws IOException {
+		//System.out.println("Getting DTO from body");
+		
+		BufferedReader reader = req.getReader();
+		StringBuilder s = new StringBuilder();
+		String line = reader.readLine();
+
+		while (line != null) {
+			s.append(line);
+			line = reader.readLine();
+		}
+
+		String body = new String(s);
+		System.out.println(body);
+		
+		return om.readValue(body, UserDTO.class);
+	}		
 }

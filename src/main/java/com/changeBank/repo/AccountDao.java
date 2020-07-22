@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.changeBank.models.accounts.Account;
 import com.changeBank.models.accounts.AccountStatus;
@@ -29,6 +28,12 @@ public class AccountDao implements IDao<Account> {
 	private AccountDao() {}
 	public static AccountDao getInstance() {
 		return repo;
+	}
+	
+	@Override
+	public boolean delete(Account t, int id) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	public boolean deleteAccountById(Account a, int authUserId) {
@@ -68,100 +73,6 @@ public class AccountDao implements IDao<Account> {
 	}
 	
 	@Override
-	public Account insert(Account account) {
-		//System.out.println("Inserting New Account");
-				
-		account.setAcctNbr(atdao.getNextAccountNumber(account.getType().getAccountTypeId()));
-		
-		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "INSERT INTO accounts (user_id_fk,acct_nbr,balance,acct_status_id_fk,acct_typ_id_fk) "
-					+ "VALUES (?,?,?,?,?);";
-			PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-			statement.setInt(1,account.getUserId());
-			statement.setInt(2,account.getAcctNbr());
-			statement.setFloat(3,account.getBalance());
-			statement.setInt(4,1);
-			statement.setInt(5,account.getType().getAccountTypeId());
-			
-			int rows = statement.executeUpdate();
-			
-			if(rows > 0) {
-				
-				ResultSet keys = statement.getGeneratedKeys();
-				
-				while(keys.next()) {
-					account = findById((int)keys.getInt(1));
-				}
-				
-				keys.close();
-		            
-			}
-			
-			return account;
-
-		}catch(SQLException e) {
-			System.out.println(e);
-		}
-		return null;
-	
-	}
-	@Override
-	public boolean update(Account t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	// Connection is passed to this method to make sure it is include in transaction/rollback
-	protected boolean updateBalance(Connection conn, int id, float bal) {
-		//System.out.println("Updating Balance");
-		//Connection conn = ConnectionUtil.getConnection()
-		try{
-			String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?;";
-			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setFloat(1, bal);
-			statement.setInt(2, id);
-			
-			// Test Transaction rollback
-			//int test = 10/0;
-			
-			int rows = statement.executeUpdate();
-			
-			if(rows > 0) {
-				return true;
-			}else {
-				return false;
-			}			
-			
-		}catch(SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
-	
-	public Account updateStatus(Account account) {
-		//System.out.println("Updating Status");
-		
-		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "UPDATE accounts SET acct_status_id_fk = ? WHERE account_id = ?";
-			PreparedStatement statement = conn.prepareStatement(sql);			
-			statement.setInt(1,account.getStatus().getAccountStatusId());
-			statement.setInt(2,account.getAccountId());
-			
-			statement.executeUpdate();
-			account = findById(account.getAccountId());
-			return account;
-		}catch(SQLException e) {
-			System.out.println(e);
-		}
-		return null;		
-	}
-	@Override
-	public boolean delete(Account t, int id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
 	public List<Account> findAll() {
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
@@ -195,7 +106,7 @@ public class AccountDao implements IDao<Account> {
 
 	@Override
 	public Account findById(int id) {
-		System.out.println("Looking Up Account by id");
+		//System.out.println("Looking Up Account by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "SELECT * FROM accounts WHERE account_id = ? ORDER BY acct_nbr;";
@@ -312,13 +223,98 @@ public class AccountDao implements IDao<Account> {
 		}
 		return null;
 	
-	}
-		
+	}	
+	
 	@Override
-	public Set<Account> selectAll() {
-		// TODO Auto-generated method stub
+	public Account insert(Account account) {
+		//System.out.println("Inserting New Account");
+				
+		account.setAcctNbr(atdao.getNextAccountNumber(account.getType().getAccountTypeId()));
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "INSERT INTO accounts (user_id_fk,acct_nbr,balance,acct_status_id_fk,acct_typ_id_fk) "
+					+ "VALUES (?,?,?,?,?);";
+			PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1,account.getUserId());
+			statement.setInt(2,account.getAcctNbr());
+			statement.setFloat(3,account.getBalance());
+			statement.setInt(4,1);
+			statement.setInt(5,account.getType().getAccountTypeId());
+			
+			int rows = statement.executeUpdate();
+			
+			if(rows > 0) {
+				
+				ResultSet keys = statement.getGeneratedKeys();
+				
+				while(keys.next()) {
+					account = findById((int)keys.getInt(1));
+				}
+				
+				keys.close();
+		            
+			}
+			
+			return account;
+
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
 		return null;
+	
 	}
+	@Override
+	public boolean update(Account t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	// Connection is passed to this method to make sure it is include in transaction/rollback
+	protected boolean updateBalance(Connection conn, int id, float bal) {
+		//System.out.println("Updating Balance");
+		//Connection conn = ConnectionUtil.getConnection()
+		try{
+			String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setFloat(1, bal);
+			statement.setInt(2, id);
+			
+			// Test Transaction rollback
+			//int test = 10/0;
+			
+			int rows = statement.executeUpdate();
+			
+			if(rows > 0) {
+				return true;
+			}else {
+				return false;
+			}			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	public Account updateStatus(Account account) {
+		//System.out.println("Updating Status");
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "UPDATE accounts SET acct_status_id_fk = ? WHERE account_id = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);			
+			statement.setInt(1,account.getStatus().getAccountStatusId());
+			statement.setInt(2,account.getAccountId());
+			
+			statement.executeUpdate();
+			account = findById(account.getAccountId());
+			return account;
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return null;		
+	}
+	
 	
 	private AccountType findAccountTypeById(int id) {
 		AccountType accountType = atdao.findById(id);	

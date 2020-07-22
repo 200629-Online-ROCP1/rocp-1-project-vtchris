@@ -2,13 +2,13 @@ package com.changeBank.models.users;
 
 public class User {
 	
-	private int userId; // primary key
-	private String username; // not null, unique
-	private String password; // not null
-	private String passwordNew; // not null
-	private String firstName; // not null
-	private String lastName; // not null
-	private String email; // not null
+	private int userId; 
+	private String username; 
+	private String password;
+	private String passwordNew; 
+	private String firstName; 
+	private String lastName; 
+	private String email; 
 	private Role role;
 	private int authUserId;
 	

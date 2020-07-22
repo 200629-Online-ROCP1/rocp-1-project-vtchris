@@ -53,6 +53,24 @@ public class AccountController {
 			res.setStatus(400);
 		}
 	}
+	
+	public void deleteAccount(HttpServletRequest req, HttpServletResponse res, int authUserId)  throws IOException {
+		AccountDTO adto = this.getAccountDTO(req);
+		Account a = as.findById(adto.accountId);
+		
+		if(a.getStatus().getAccountStatusId() < 4) {
+			res.setStatus(400);
+			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Accounts can be deleted ONLY if their status is CLOSED or DENIED.")));
+		}else {
+			if(as.deleteAccountById(a, authUserId)) {
+				res.setStatus(200);
+				res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Account deleted.")));
+			}else {
+				res.setStatus(500);
+				res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Account could not be deleted.")));
+			}			
+		}				
+	}
 		
 	public void findAll(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		List<Account> accounts = as.findAll();		
@@ -65,20 +83,6 @@ public class AccountController {
 		
 	}
 		
-	public void findById(HttpServletRequest req, HttpServletResponse res, int roleId, int authUserId, int id) throws IOException {
-
-		Account a = as.findById(id);
-		
-		if(roleId == 1 || roleId == 2 || a.getUserId() == authUserId) {			
-			AccountDTO adto = getAccountDTO(a);
-			res.setStatus(200);
-			res.getWriter().println(om.writeValueAsString(adto));
-		}else {
-			res.setStatus(401);	
-		}
-		
-	}
-	
 	public void findAllByStatusId(HttpServletRequest req, HttpServletResponse res, int id) throws IOException {
 
 		List<Account> accounts = as.findAllByStatusId(id);	
@@ -111,6 +115,19 @@ public class AccountController {
 			res.setStatus(200);
 			res.getWriter().println(om.writeValueAsString(asdto));	
 		}
+	}
+	
+	public void findById(HttpServletRequest req, HttpServletResponse res, int roleId, int authUserId, int id) throws IOException {
+
+		Account a = as.findById(id);
+		
+		if(roleId == 1 || roleId == 2 || a.getUserId() == authUserId) {			
+			AccountDTO adto = getAccountDTO(a);
+			res.setStatus(200);
+			res.getWriter().println(om.writeValueAsString(adto));
+		}else {
+			res.setStatus(401);	
+		}		
 	}
 	
 	public void updateAccount(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -216,5 +233,5 @@ public class AccountController {
 		
 		return udto;
 		
-	}
+	}	
 }

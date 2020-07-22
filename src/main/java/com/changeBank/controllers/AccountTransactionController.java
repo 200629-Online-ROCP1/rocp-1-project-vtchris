@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AccountTransactionController {
 	
-	//private static final AccountDao adao = AccountDao.getInstance();
 	private static final AccountService as = new AccountService();
 	private static final AccountTransactionService ts = new AccountTransactionService();
 	private static final MessageService ms = new MessageService();

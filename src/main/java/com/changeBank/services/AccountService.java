@@ -1,7 +1,6 @@
 package com.changeBank.services;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.changeBank.models.accounts.Account;
@@ -90,8 +89,5 @@ public class AccountService {
 		}		
 		
 	}
-
-	
-
 	
 }

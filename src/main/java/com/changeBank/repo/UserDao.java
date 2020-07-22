@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.security.auth.login.LoginException;
 
@@ -109,7 +108,7 @@ public class UserDao implements IDao<User> {
 
 	@Override
 	public User findById(int id) {
-		System.out.println("Looking Up User by id");
+		//System.out.println("Looking Up User by id");
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "SELECT * FROM users WHERE user_id = ?";
@@ -159,7 +158,7 @@ public class UserDao implements IDao<User> {
 	}
 	
 	public User findByUsername(String username) {
-		System.out.println("Looking Up User by username");
+		//System.out.println("Looking Up User by username");
 		
 		username = username.trim().toLowerCase();
 		
@@ -213,15 +212,9 @@ public class UserDao implements IDao<User> {
 		return null;
 		
 	}
-
-	@Override
-	public Set<User> selectAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+		
 	public User authenticate(UserLoginDTO login)  {	
-		System.out.println("Attempting to login");
+		//System.out.println("Attempting to login");
 		
 		login.password = hashPassword(login.password);
 		
@@ -269,7 +262,7 @@ public class UserDao implements IDao<User> {
 	}
 	@Override
 	public boolean update(User user) {
-		System.out.println("Updating");
+		//System.out.println("Updating");
 		
 		if(user.getPasswordNew() != null && user.getPasswordNew().length() > 3 ) {
 			user.setPassword(hashPassword(user.getPasswordNew()));

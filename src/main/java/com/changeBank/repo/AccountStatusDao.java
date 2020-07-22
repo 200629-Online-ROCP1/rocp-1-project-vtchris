@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import com.changeBank.models.accounts.AccountStatus;
 import com.changeBank.utils.ConnectionUtil;
@@ -57,11 +56,7 @@ public class AccountStatusDao implements IDao<AccountStatus> {
 			}
 			return null;
 		}
-		@Override
-		public Set<AccountStatus> selectAll() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		
 		@Override
 		public List<AccountStatus> findAll() {
 			// TODO Auto-generated method stub

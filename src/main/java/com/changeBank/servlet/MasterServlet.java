@@ -120,6 +120,13 @@ public class MasterServlet extends HttpServlet {
 				}else {
 					res.setStatus(401);		
 				}				
+			}else if(METHOD.equals("DELETE")) {
+				//Only and admin can perform this function
+				if(roleId == 1) {
+					ac.deleteAccount(req, res, authUserId);
+				}else {
+					res.setStatus(401);	
+				}
 			}else {
 				res.setStatus(405);			
 			}

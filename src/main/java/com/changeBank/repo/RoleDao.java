@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import com.changeBank.models.users.Role;
 import com.changeBank.utils.ConnectionUtil;
@@ -55,12 +54,7 @@ public class RoleDao implements IDao<Role> {
 		}
 		return null;
 	}
-
-	@Override
-	public Set<Role> selectAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	@Override
 	public boolean update(Role t) {
 		// TODO Auto-generated method stub
