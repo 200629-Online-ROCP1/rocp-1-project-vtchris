@@ -1,3 +1,8 @@
+# PROJECT DEMO
+![](demo/newUser.gif)
+This is a demo of my completed Java program using Postman to simulate the front-end. Note an admin must be logged in to perform some of the functions. In this demo a new user is set up. A new savings account is opened for the user and a deposit is made. Finally interest is applied to all savings accounts.
+
+
 # Banking API
 The Banking API will manage the bank accounts of its users. It will be managed by the Bank's employees and admins. Employees and Admins count as Standard users with additional abilities.
 * Employees can view all customer information, but not modify in any way.

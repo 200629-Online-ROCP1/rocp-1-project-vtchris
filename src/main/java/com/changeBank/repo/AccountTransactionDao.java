@@ -62,7 +62,7 @@ public class AccountTransactionDao implements IDao<AccountTransaction> {
 		}
 		@Override
 		public AccountTransaction insert(AccountTransaction t) {
-			System.out.println("Inserting New Transaction");
+			//System.out.println("Inserting New Transaction");
 					
 			Connection conn = null;
 			

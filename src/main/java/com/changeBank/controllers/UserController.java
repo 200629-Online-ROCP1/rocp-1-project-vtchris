@@ -27,21 +27,6 @@ public class UserController {
 		
 		UserDTO udto = this.getUserDTO(req);
 		
-//		BufferedReader reader = req.getReader();
-//		StringBuilder s = new StringBuilder();
-//		String line = reader.readLine();
-//
-//		while (line != null) {
-//			s.append(line);
-//			line = reader.readLine();
-//		}
-//
-//		String body = new String(s);
-//		//System.out.println(body);
-//		
-//		UserDTO udto = om.readValue(body, UserDTO.class);
-		
-		// Make sure the username and email address are not already in use.
 		if(us.findByUsername(udto.username) != null) {
 			res.setStatus(400);
 			res.getWriter().println(om.writeValueAsString(ms.getMessageDTO("Username not available, please try again.")));
