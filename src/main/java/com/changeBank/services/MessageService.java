@@ -12,4 +12,13 @@ public class MessageService {
 		return mdto;
 		
 	}
+	
+public MessageDTO getUnauthorizedMessageDTO() {
+		
+		MessageDTO mdto = new MessageDTO();
+		mdto.message = "The requested action is not permitted.";
+		
+		return mdto;
+		
+	}
 }

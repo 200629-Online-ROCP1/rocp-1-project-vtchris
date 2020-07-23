@@ -13,6 +13,8 @@ import com.changeBank.controllers.AccountController;
 import com.changeBank.controllers.AccountTransactionController;
 import com.changeBank.controllers.LoginController;
 import com.changeBank.controllers.UserController;
+import com.changeBank.services.MessageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SuppressWarnings("serial")
 public class MasterServlet extends HttpServlet {
@@ -20,6 +22,8 @@ public class MasterServlet extends HttpServlet {
 	private static final AccountController ac = new AccountController();
 	private static final AccountTransactionController tc = new AccountTransactionController();
 	private static final LoginController lc = new LoginController();
+	private static final MessageService ms = new MessageService();
+	private static final ObjectMapper om = new ObjectMapper();
 	private static final UserController uc = new UserController();
 	
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
@@ -70,6 +74,7 @@ public class MasterServlet extends HttpServlet {
 						ac.findAll(req, res);
 					}else {
 						res.setStatus(401);		
+						res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 					}					
 				}else if(URIparts.length == 2) {
 					ac.findById(req,res, roleId, authUserId, Integer.parseInt(URIparts[1]) );
@@ -81,7 +86,8 @@ public class MasterServlet extends HttpServlet {
 						if(roleId == 1 || roleId == 2) {
 							ac.findAllByStatusId(req, res, id);
 						}else {
-							res.setStatus(401);		
+							res.setStatus(401);	
+							res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 						}
 					}else if(path2.equals("users")) {
 						// Must be an employee to access Or account holder
@@ -109,6 +115,7 @@ public class MasterServlet extends HttpServlet {
 							ac.createInterest(req, res, authUserId);
 						}else {
 							res.setStatus(401);	
+							res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 						}
 					}else {
 						res.setStatus(405);	
@@ -118,7 +125,8 @@ public class MasterServlet extends HttpServlet {
 				if(roleId == 1) {
 					ac.updateAccount(req, res);
 				}else {
-					res.setStatus(401);		
+					res.setStatus(401);	
+					res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 				}				
 			}else if(METHOD.equals("DELETE")) {
 				//Only and admin can perform this function
@@ -126,6 +134,7 @@ public class MasterServlet extends HttpServlet {
 					ac.deleteAccount(req, res, authUserId);
 				}else {
 					res.setStatus(401);	
+					res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 				}
 			}else {
 				res.setStatus(405);			
@@ -155,6 +164,7 @@ public class MasterServlet extends HttpServlet {
 					}
 				}else {
 					res.setStatus(401);		
+					res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 				}
 			}else if(METHOD.equals("POST")) {
 				//Only and admin can perform this function
@@ -171,6 +181,7 @@ public class MasterServlet extends HttpServlet {
 							uc.deleteUser(req, res, authUserId);
 						}else {
 							res.setStatus(401);	
+							res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 						}
 			}else {
 				res.setStatus(405);	

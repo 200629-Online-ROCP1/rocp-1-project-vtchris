@@ -93,6 +93,7 @@ public class AccountTransactionController {
 		}else {
 			// Unauthorized
 			res.setStatus(401);
+			res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 		}				
 	}
 

@@ -130,6 +130,7 @@ public class UserController {
 	    	
 	    }else {
 	    	res.setStatus(401);
+	    	res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 	    }
 		
 	}

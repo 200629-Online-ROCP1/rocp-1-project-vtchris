@@ -39,6 +39,7 @@ public class AccountController {
 			}
 		}else {
 			res.setStatus(401);
+			res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 		}
 	}
 	
@@ -127,6 +128,7 @@ public class AccountController {
 			res.getWriter().println(om.writeValueAsString(adto));
 		}else {
 			res.setStatus(401);	
+			res.getWriter().println(om.writeValueAsString(ms.getUnauthorizedMessageDTO()));
 		}		
 	}
 	
